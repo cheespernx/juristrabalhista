@@ -1,10 +1,13 @@
 <?php 
   session_start();
+  $_SESSION['user_id'] = 1;
 	$user_id = $_SESSION['user_id'];
 
   include_once('controller/dbcon.php');
 
-	$sql = "SELECT * FROM julgados INNER JOIN julgados_favoritos ON julgados_favoritos.julgado = julgados.id WHERE julgados_favoritos.usuario = '$user_id'";
+	$sql = "SELECT a.id, a.titulo, a.categoria, a.origem, a.ano, b.id_usuario, b.julgado FROM julgados a INNER JOIN julgados_favoritos b ON a.id = b.julgado AND b.id_usuario = '$user_id'";
+  
+  //$sql = "SELECT * FROM julgados INNER JOIN julgados_favoritos ON julgados_favoritos.julgado = julgados.id WHERE julgados_favoritos.usuario = '$user_id'";
 
   //$sqlListaJulgadosFavoritos = "SELECT id FROM julgados_favoritos WHERE id_usuario = '$user_id'";
   $query = mysqli_query($conn, $sql);
@@ -59,7 +62,7 @@
       <div class="sidebar-wrapper">
         <div class="user">
           <div class="photo">
-            <img src="assets/img/faces/avatar.jpg" />
+          <img src="assets/img/default-avatar.png" />
           </div>
           <div class="user-info">
             <a data-toggle="collapse" href="#collapseExample" class="username">
@@ -72,7 +75,7 @@
               <ul class="nav">
                 <li class="nav-item">
                   <a class="nav-link" href="#">
-                    <span class="sidebar-mini"> MP </span>
+                    <span class="sidebar-mini"> <i class="material-icons">person</i> </span>
                     <span class="sidebar-normal"> Meu Perfil </span>
                   </a>
                 </li>
@@ -239,10 +242,10 @@
                           <td><?php echo $data['origem']; ?></td>
                           <td><?php echo $data['ano']; ?></td>
                           <td class="text-right">
-                            <a href="verjulgado?id=<?php echo $data['id']; ?>" class="btn btn-link btn-info btn-just-icon like"><i class="material-icons">remove_red_eye</i></a>
-                            <a href="#" class="btn btn-link btn-warning btn-just-icon edit"><i class="material-icons">edit</i></a>
-                            <a href="controller/desfavoritar_julgado.php?id=<?php echo $data['id']; ?>" class="btn btn-link btn-rose btn-just-icon edit"><i class="material-icons">favorite_border</i></a>
-                            <a href="#" class="btn btn-link btn-danger btn-just-icon remove" data-href="controller/excluir_julgado.php?id=<?php echo $data['id']; ?>" data-toggle="modal" data-target="#confirm-delete"><i class="material-icons">close</i></a>
+                            <a href="verjulgado?id=<?php echo $data['id']; ?>" class="btn btn-link btn-info btn-just-icon like" data-placement="top" title="Ver"><i class="material-icons" >remove_red_eye</i></a>
+                            <a href="#" class="btn btn-link btn-warning btn-just-icon edit" data-placement="top" title="Editar"><i class="material-icons">edit</i></a>
+                            <a href="controller/desfavoritar_julgado.php?id=<?php echo $data['id']; ?>" class="btn btn-link btn-rose btn-just-icon edit" data-placement="top" title="Desfavoritar"><i class="material-icons">favorite_border</i></a>
+                            <a href="#" class="btn btn-link btn-danger btn-just-icon remove" data-href="controller/excluir_julgado.php?id=<?php echo $data['id']; ?>" data-toggle="modal" data-target="#confirm-delete" data-placement="top" title="Excluir"><i class="material-icons">close</i></a>
                           </td>
                         </tr>
                         <?php } ?>
@@ -666,7 +669,25 @@
         type: 'danger',
         allow_dismiss: true
       });
-    } 
+    } else if(sucesso == 9){
+      var notify = $.notify('<div class="alert-icon"><i class="material-icons">favorite</i></div> <strong>Julgado</strong> desfavoritado com sucesso.', {
+        icon: 'glyphicon glyphicon-alert',
+        type: 'success',
+        allow_dismiss: true
+      });
+    } else if(sucesso == 10){
+      var notify = $.notify('<div class="alert-icon"><i class="material-icons">favorite_border</i></div> <strong>Julgado</strong> atualizado com sucesso.', {
+        icon: 'glyphicon glyphicon-alert',
+        type: 'success',
+        allow_dismiss: true
+      });
+    } else if(sucesso == 11){
+      var notify = $.notify('<div class="alert-icon"><i class="material-icons">favorite_border</i></div> <strong>Erro: </strong> Julgado não atualizado.', {
+        icon: 'glyphicon glyphicon-alert',
+        type: 'danger',
+        allow_dismiss: true
+      });
+    }
   </script>
 </body>
 

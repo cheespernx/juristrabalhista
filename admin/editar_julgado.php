@@ -5,8 +5,17 @@
 
   include_once('controller/dbcon.php');
 
-  $sqlListaJulgados = "SELECT * FROM julgados";
-  $queryListaJulgados = mysqli_query($conn, $sqlListaJulgados);
+  if(!isset($_GET['id'])){
+    $_SESSION['sucesso'] = 6;
+		echo "
+			<script>
+			  window.history.back();
+			</script>";
+  }
+  $id = $_GET['id'];
+  $sql = "SELECT * FROM julgados WHERE id = '$id'";
+  $query = mysqli_query($conn, $sql);
+  $data = mysqli_fetch_assoc($query);
 
 ?>
 
@@ -60,7 +69,7 @@
       <div class="sidebar-wrapper">
         <div class="user">
           <div class="photo">
-            <img src="assets/img/default-avatar.png" />
+          <img src="assets/img/default-avatar.png" />
           </div>
           <div class="user-info">
             <a data-toggle="collapse" href="#collapseExample" class="username">
@@ -197,79 +206,14 @@
       <div class="content">
         <div class="container-fluid">
           <div class="row">
-            <div class="col-md-12">
-              <div class="card">
-                <div class="card-header card-header-primary card-header-icon">
-                  <div class="card-icon">
-                    <i class="material-icons">assignment</i>
-                  </div>
-                  <h4 class="card-title">Julgados</h4>
-                </div>
-                <div class="card-body">
-                  <div class="toolbar">
-                    <!--        Here you can write extra buttons/actions for the toolbar              -->
-                  </div>
-                  <div class="material-datatables">
-                    <table id="datatables1" class="table table-striped table-no-bordered table-hover datatable" cellspacing="0" width="100%" style="width:100%">
-                      <thead>
-                        <tr>
-                          <th>ID</th>
-                          <th>Título</th>
-                          <th>Categoria</th>
-                          <th>Origem</th>
-                          <th>Ano</th>
-                          <th class="disabled-sorting text-right">Ações</th>
-                        </tr>
-                      </thead>
-                      <tfoot>
-                        <tr>
-                          <th>ID</th>
-                          <th>Título</th>
-                          <th>Categoria</th>
-                          <th>Origem</th>
-                          <th>Ano</th>
-                          <th class="text-right">Ações</th>
-                        </tr>
-                      </tfoot>
-                      <tbody>
-                        <?php 
-                          while($data = mysqli_fetch_assoc($queryListaJulgados)){ 
-                            $id = $data['id'];
-                            
-                            $select = "SELECT * FROM julgados_favoritos WHERE julgado = '$id' AND id_usuario = '$idUsuario'";
-                            $exec = mysqli_query($conn, $select);
-                            $num = mysqli_num_rows($exec);
-                        ?>
-                        <tr>
-                          <td><?php echo $data['id']; ?></td>
-                          <td><a href="verjulgado.php?id=<?php echo $data['id']; ?>"><?php echo $data['titulo']; ?></a></td>
-                          <td><?php echo $data['categoria']; ?></td>
-                          <td><?php echo $data['origem']; ?></td>
-                          <td><?php echo $data['ano']; ?></td>
-                          <td class="text-right">
-                            <a href="verjulgado.php?id=<?php echo $data['id']; ?>" class="btn btn-link btn-info btn-just-icon like" data-placement="top" title="Ver"><i class="material-icons">remove_red_eye</i></a>
-                            <a href="editar_julgado.php?id=<?php echo $data['id']; ?>" class="btn btn-link btn-warning btn-just-icon edit" data-placement="top" title="Editar"><i class="material-icons">edit</i></a>
-                            <a href="controller/<?php echo $num > 0 ? 'desfavoritar':'favoritar' ?>_julgado.php?id=<?php echo $data['id']; ?>" class="btn btn-link btn-rose btn-just-icon edit" data-placement="top" title="<?php echo $num > 0 ? 'Desfavoritar':'Favoritar' ?>"><i class="material-icons"><?php echo $num > 0 ? 'favorite_border':'favorite' ?></i></a>
-                            <a href="#" class="btn btn-link btn-danger btn-just-icon remove" data-href="controller/excluir_julgado.php?id=<?php echo $data['id']; ?>" data-toggle="modal" data-target="#confirm-delete" data-placement="top" title="Excluir"><i class="material-icons">close</i></a>
-                          </td>
-                        </tr>
-                        <?php } ?>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-                <!-- end content-->
-              </div>
-              <!--  end card  -->
-            </div>
             <!-- end col-md-8 -->
             <div class="col-md-12">
               <div class="card ">
-                <div class="card-header card-header-rose card-header-icon">
+                <div class="card-header card-header-info card-header-icon">
                   <div class="card-icon">
-                    <i class="material-icons">add</i>
+                    <i class="material-icons">edit</i>
                   </div>
-                  <h4 class="card-title">Adicionar Julgado</h4>
+                  <h4 class="card-title">Editar Julgado</h4>
                 </div>
                 <form method="POST" action="controller/adicionar_julgado.php">
                   <div class="card-body ">
@@ -277,17 +221,18 @@
                       <div class="col-md-8">
                         <div class="form-group">
                           <label for="titulo" class="bmd-label-floating">Título do Julgado</label>
-                          <input type="text" class="form-control" name="titulo" id="titulo">
+                          <input type="text" class="form-control" name="titulo" value="<?php echo $data['titulo']; ?>" id="titulo">
+                          <input type="hidden" class="form-control" name="id" value="<?php echo $data['id']; ?>" id="id">
                         </div>
                       </div>
                       <div class="col-md-4">
                         <div class="form-group">
                           <select class="selectpicker" data-style="select-with-transition" title="Selecione a Origem" name="origem" data-size="7">
                             <option disabled> Selecione uma Opção</option>
-                            <option value="STF">STF </option>
-                            <option value="TRT">TRT </option>
-                            <option value="Avulso">Avulso </option>
-                            <option value="Pessoal">Pessoal </option>
+                            <option value="STF" <?php echo $data['origem'] == 'STF' ? 'selected':'' ?>>STF </option>
+                            <option value="TRT" <?php echo $data['origem'] == 'TRT' ? 'selected':'' ?>>TRT </option>
+                            <option value="Avulso" <?php echo $data['origem'] == 'Avulso' ? 'selected':'' ?>>Avulso </option>
+                            <option value="Pessoal" <?php echo $data['origem'] == 'Pessoal' ? 'selected':'' ?>>Pessoal </option>
                           </select>
                         </div>
                       </div>
@@ -298,7 +243,7 @@
                         <div class="form-group">
                           <select class="selectpicker" data-style="select-with-transition" title="Selecione uma Categoria" name="categoria" data-size="7">
                             <option disabled> Selecione uma Opção</option>
-                            <option value="Direito do Trabalho e Processual do Trabalho">Direito do Trabalho e Processual do Trabalho </option>
+                            <option value="Direito do Trabalho e Processual do Trabalho" <?php echo $data['categoria'] == 'Direito do Trabalho e Processual do Trabalho' ? 'selected':'' ?>>Direito do Trabalho e Processual do Trabalho </option>
                           </select>
                         </div>
                       </div>
@@ -306,7 +251,7 @@
                         <div class="form-group">
                           <select class="selectpicker" data-style="select-with-transition" title="Selecione uma Subcategoria" name="subcategoria" data-size="7">
                             <option disabled> Selecione uma Opção</option>
-                            <option value="Diversos">Diversos</option>
+                            <option value="Diversos" <?php echo $data['subcategoria'] == 'Diversos' ? 'selected':'' ?>>Diversos</option>
                           </select>
                         </div>
                       </div>
@@ -318,7 +263,7 @@
                         <div class="form-group">
                           <select class="selectpicker" data-style="select-with-transition" title="Selecione um Assunto" name="assunto" data-size="7">
                             <option disabled> Selecione uma Opção</option>
-                            <option value="Geral">Geral </option>
+                            <option value="Geral" <?php echo $data['assunto'] == 'Geral' ? 'selected':'' ?>>Geral </option>
                           </select>
                         </div>
                       </div>
@@ -326,16 +271,16 @@
                         <div class="form-group">
                           <select class="selectpicker" data-style="select-with-transition" title="Selecione um Ano" name="ano" data-size="7">
                             <option disabled> Selecione uma Opção</option>
-                            <option value="Anteriores a 2012">Anteriores a 2012</option>
-                            <option value="2012">2012</option>
-                            <option value="2013">2013</option>
-                            <option value="2014">2014</option>
-                            <option value="2015">2015</option>
-                            <option value="2016">2016</option>
-                            <option value="2017">2017</option>
-                            <option value="2018">2019</option>
-                            <option value="2019">2019</option>
-                            <option value="2020">2020</option>
+                            <option value="Anteriores a 2012" <?php echo $data['ano'] == 'Anteriores a 2012' ? 'selected':'' ?>>Anteriores a 2012</option>
+                            <option value="2012"<?php echo $data['ano'] == '2012' ? 'selected':'' ?>>2012</option>
+                            <option value="2013"<?php echo $data['ano'] == '2013' ? 'selected':'' ?>>2013</option>
+                            <option value="2014"<?php echo $data['ano'] == '2014' ? 'selected':'' ?>>2014</option>
+                            <option value="2015"<?php echo $data['ano'] == '2015' ? 'selected':'' ?>>2015</option>
+                            <option value="2016"<?php echo $data['ano'] == '2016' ? 'selected':'' ?>>2016</option>
+                            <option value="2017"<?php echo $data['ano'] == '2017' ? 'selected':'' ?>>2017</option>
+                            <option value="2018"<?php echo $data['ano'] == '2018' ? 'selected':'' ?>>2019</option>
+                            <option value="2019"<?php echo $data['ano'] == '2019' ? 'selected':'' ?>>2019</option>
+                            <option value="2020"<?php echo $data['ano'] == '2020' ? 'selected':'' ?>>2020</option>
                           </select>
                         </div>
                       </div>
@@ -344,11 +289,11 @@
                     
                     <!-- Julgado #START -->
                     <div class="form-group">
-                      <textarea id="editor1" name="conteudo" placeholder="Corpo do Julgado"></textarea>
+                      <textarea id="editor1" name="conteudo" placeholder="Corpo do Julgado"><?php echo $data['conteudo']; ?></textarea>
                     </div>
                   </div>
                   <div class="card-footer ">
-                    <button type="submit" class="btn btn-fill btn-rose">Adicionar</button>
+                    <button type="submit" class="btn btn-fill btn-success">Salvar</button>
                   </div>
                 </form>
               </div>
@@ -785,7 +730,6 @@
         allow_dismiss: true
       });
     }
-    
   </script>
 </body>
 
