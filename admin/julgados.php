@@ -1,10 +1,13 @@
 <?php 
   session_start();
+  $_SESSION['user_id'] = 1;
+  $idUsuario = $_SESSION['user_id'];
 
   include_once('controller/dbcon.php');
 
   $sqlListaJulgados = "SELECT * FROM julgados";
   $queryListaJulgados = mysqli_query($conn, $sqlListaJulgados);
+
 ?>
 
 <!DOCTYPE html>
@@ -24,6 +27,7 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
   <!-- CSS Files -->
   <link href="assets/css/material-dashboard.css?v=2.1.0" rel="stylesheet" />
+  
   <!-- CSS Just for demo purpose, don't include it in your project -->
   <link href="assets/demo/demo.css" rel="stylesheet" />
   <script type="text/javascript" src="assets/ckeditor/ckeditor.js"></script>
@@ -228,17 +232,24 @@
                         </tr>
                       </tfoot>
                       <tbody>
-                        <?php while($data = mysqli_fetch_assoc($queryListaJulgados)){ ?>
+                        <?php 
+                          while($data = mysqli_fetch_assoc($queryListaJulgados)){ 
+                            $id = $data['id'];
+                            
+                            $select = "SELECT * FROM julgados_favoritos WHERE julgado = '$id' AND id_usuario = '$idUsuario'";
+                            $exec = mysqli_query($conn, $select);
+                            $num = mysqli_num_rows($exec);
+                        ?>
                         <tr>
                           <td><?php echo $data['id']; ?></td>
-                          <td><a href="verjulgado?id=<?php echo $data['id']; ?>"><?php echo $data['titulo']; ?></a></td>
+                          <td><a href="verjulgado.php?id=<?php echo $data['id']; ?>"><?php echo $data['titulo']; ?></a></td>
                           <td><?php echo $data['categoria']; ?></td>
                           <td><?php echo $data['origem']; ?></td>
                           <td><?php echo $data['ano']; ?></td>
                           <td class="text-right">
-                            <a href="verjulgado?id=<?php echo $data['id']; ?>" class="btn btn-link btn-info btn-just-icon like"><i class="material-icons">remove_red_eye</i></a>
+                            <a href="verjulgado.php?id=<?php echo $data['id']; ?>" class="btn btn-link btn-info btn-just-icon like"><i class="material-icons">remove_red_eye</i></a>
                             <a href="#" class="btn btn-link btn-warning btn-just-icon edit"><i class="material-icons">edit</i></a>
-                            <a href="controller/favoritar_julgado.php?id=<?php echo $data['id']; ?>" class="btn btn-link btn-rose btn-just-icon edit"><i class="material-icons">favorite</i></a>
+                            <a href="controller/<?php echo $num > 0 ? 'desfavoritar':'favoritar' ?>_julgado.php?id=<?php echo $data['id']; ?>" class="btn btn-link btn-rose btn-just-icon edit"><i class="material-icons"><?php echo $num > 0 ? 'favorite_border':'favorite' ?></i></a>
                             <a href="#" class="btn btn-link btn-danger btn-just-icon remove" data-href="controller/excluir_julgado.php?id=<?php echo $data['id']; ?>" data-toggle="modal" data-target="#confirm-delete"><i class="material-icons">close</i></a>
                           </td>
                         </tr>
@@ -755,7 +766,13 @@
         type: 'danger',
         allow_dismiss: true
       });
-    } 
+    } else if(sucesso == 9){
+      var notify = $.notify('<div class="alert-icon"><i class="material-icons">favorite_border</i></div> <strong>Julgado</strong> desfavoritado com sucesso.', {
+        icon: 'glyphicon glyphicon-alert',
+        type: 'success',
+        allow_dismiss: true
+      });
+    }
   </script>
 </body>
 

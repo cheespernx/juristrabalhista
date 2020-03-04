@@ -1,15 +1,16 @@
 <?php 
   session_start();
+  $_SESSION['user_id'] = 1;
 	$user_id = $_SESSION['user_id'];
 
   include_once('controller/dbcon.php');
 
-	$sql = "SELECT * FROM julgados INNER JOIN julgados_favoritos ON julgados_favoritos.julgado = julgados.id WHERE julgados_favoritos.usuario = '$user_id'";
+	$sql = "SELECT a.id, a.titulo, a.categoria, a.origem, a.ano, b.id_usuario, b.julgado FROM julgados a INNER JOIN julgados_favoritos b ON a.id = b.julgado AND b.id_usuario = '$user_id'";
+  
+  //$sql = "SELECT * FROM julgados INNER JOIN julgados_favoritos ON julgados_favoritos.julgado = julgados.id WHERE julgados_favoritos.usuario = '$user_id'";
 
   //$sqlListaJulgadosFavoritos = "SELECT id FROM julgados_favoritos WHERE id_usuario = '$user_id'";
   $query = mysqli_query($conn, $sql);
-
-	
 	
 ?>
 
@@ -669,7 +670,13 @@
         type: 'danger',
         allow_dismiss: true
       });
-    } 
+    } else if(sucesso == 9){
+      var notify = $.notify('<div class="alert-icon"><i class="material-icons">favorite</i></div> <strong>Julgado</strong> desfavoritado com sucesso.', {
+        icon: 'glyphicon glyphicon-alert',
+        type: 'success',
+        allow_dismiss: true
+      });
+    }
   </script>
 </body>
 
