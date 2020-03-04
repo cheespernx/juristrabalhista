@@ -8,9 +8,6 @@
 
   //$sqlListaJulgadosFavoritos = "SELECT id FROM julgados_favoritos WHERE id_usuario = '$user_id'";
   $query = mysqli_query($conn, $sql);
-
-	
-	
 ?>
 
 <!DOCTYPE html>
