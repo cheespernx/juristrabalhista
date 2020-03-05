@@ -40,15 +40,13 @@
             <li class="nav-item dropdown">
               <a class="nav-link" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="material-icons">notifications</i>
-                <span class="notification"><?php echo $novosPedidos; ?></span>
+                <span class="notification">1</span>
                 <p class="d-lg-none d-md-block">
                   Ações
                 </p>
               </a>
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                <?php while ($pedidop = mysqli_fetch_assoc($sqlp)) { ?>
-                  <a class="dropdown-item" href="vieworder.php?id=<?php echo $pedidop['id'] ?>">Novo pedido de <?php echo $pedidop['nome'] ?></a>
-                <?php } ?>
+                Teste
               </div>
             </li>
             <!-- your navbar here -->

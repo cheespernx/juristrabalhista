@@ -1,17 +1,9 @@
 <?php
-session_start();
-$pagina = $_SESSION['id_pagina'];
-$collapse = $_SESSION['id_collapse'];
-$_SESSION['id_pagina'] = '';
-$_SESSION['id_collapse'] = '';
-
-
-$tipoUser = $_SESSION['tipo_user'];
-if ($tipoUser != 'admin' and $tipoUser == 'cliente') {
-header('Location: cliente/areadocliente.php');
-}
-
-
+  session_start();
+  $pagina = $_SESSION['pagina'];
+  $collapse = $_SESSION['collapse'];
+  $_SESSION['pagina'] = '';
+  $_SESSION['collapse'] = '';
 ?>
 <!doctype html>
 <html lang="pt-br">
@@ -39,19 +31,22 @@ Tip 1: You can change the color of the sidebar using: data-color="purple | azure
 Tip 2: you can also add an image using data-image tag
 -->
       <div class="logo">
-        <a href="index.php" class="simple-text logo-normal">
+        <a href="https://juristrabalhista.com" class="simple-text logo-mini">
+          JT
+        </a>
+        <a href="https://juristrabalhista.com" class="simple-text logo-normal">
           Juris<b>Trabalhista</b>
         </a>
       </div>
       <div class="sidebar-wrapper">
         <div class="user">
           <div class="photo">
-            <img src="assets/img/faces/avatar.jpg"/>
+            <img src="assets/img/default-avatar.png"/>
           </div>
           <div class="user-info">
             <a data-toggle="collapse" href="#collapseExample" class="username">
               <span>
-                <?php echo TrataNome($_SESSION['nome']); ?>
+                Victor Carvalho
                 <b class="caret"></b>
               </span>
             </a>
@@ -79,99 +74,62 @@ Tip 2: you can also add an image using data-image tag
             </div>
           </div>
         </div>
-      <ul class="nav">
-        <li class="nav-item <?php echo $pagina == 'index'?'active':'' ?>">
-          <a class="nav-link" href="index.php">
-            <i class="material-icons">dashboard</i>
-              <p>Início</p>
-          </a>
-        </li>
-        <li class="nav-item ">
-          <a class="nav-link" href="gestao.php">
-            <i class="material-icons">build</i>
-              <p>Gestão</p>
-          </a>
-        </li>
-        <li class="nav-item <?php echo $pagina == 'comercial'?'active':'' ?>">
-          <a class="nav-link" href="comercial.php">
-            <i class="material-icons">work</i>
-              <p>Comercial</p>
-          </a>
-        </li>
-				 <li class="nav-item <?php echo $pagina == 'conteudo'?'active':'' ?>">
-          <a class="nav-link" href="conteudo.php">
-            <i class="material-icons">edit</i>
-              <p>Conteúdo</p>
-          </a>
-        </li>
-        <li class="nav-item <?php echo $collapse == 'crm'?'active':'' ?>">
-          <a class="nav-link" data-toggle="collapse" href="#" data-target="#div-crm">
-            <i class="material-icons">supervisor_account</i>
-              <p>CRM
+        <ul class="nav">
+          <li class="nav-item">
+            <a class="nav-link" href="examples/dashboard.html">
+              <i class="material-icons">dashboard</i>
+              <p> Dashboard </p>
+            </a>
+          </li>
+          <li class="nav-item <?php echo $collapse == 'conteudo' ? 'active':''; ?>">
+            <a class="nav-link" data-toggle="collapse" href="#pagesExamples">
+              <i class="material-icons">image</i>
+              <p> Conteúdo
                 <b class="caret"></b>
               </p>
-          </a>
-          <div class="collapse" id="div-crm">
-            <ul class="nav">
-              <li class="nav-item <?php echo $pagina == 'cadastro_cliente'?'active':'' ?>">
-                <a class="nav-link" href="cadastro_cliente.php">
-                  <i class="material-icons">assignment_ind</i>
-                    <p>Cadastro de Cliente</p>
-                </a>
-              </li>
-              <li class="nav-item <?php echo $pagina == 'lista'?'active':'' ?>">
-                <a class="nav-link" href="lista.php">
-                  <i class="material-icons">list_alt</i>
-                  <p>Clientes</p>
-                </a>
-              </li>
-              <li class="nav-item <?php echo $pagina == 'cadastro_consultores'?'active':'' ?>">
-                <a class="nav-link" href="cadastro_consultores.php">
-                  <i class="material-icons">assignment_ind</i>
-                    <p>Cadastro de Usuários</p>
-                </a>
-              </li>
-              <li class="nav-item <?php echo $pagina == 'lista_consultores'?'active':'' ?>">
-                <a class="nav-link" href="lista_consultores.php">
-                  <i class="material-icons">list_alt</i>
-                    <p>Usuarios</p>
-                </a>
-              </li>
-              <li class="nav-item <?php echo $pagina == 'agenda'?'active':'' ?>">
-                <a class="nav-link" href="agenda.php">
-                  <i class="material-icons">view_agenda</i>
-                    <p>Tarefas</p>
-                </a>
-              </li>
-            </ul>            
-          </div>
-        </li>
-        
-        <li class="nav-item <?php echo $collapse == 'produtos'?'active':'' ?>">
-          <a class="nav-link" data-toggle="collapse" href="#" data-target="#div-produtos">
-            <i class="material-icons">shopping_cart</i>
-              <p>Produtos
-                <b class="caret"></b>
-              </p>
-          </a>
-          <div class="collapse" id="div-produtos">
-            <ul class="nav">
-              <li class="nav-item <?php echo $pagina == 'produtos_odonto'?'active':'' ?>">
-                <a class="nav-link" href="produtos_odonto.php">
-                  <i class="material-icons">add_shopping_cart</i>
-                    <p>Adicionar produtos</p>
-                </a>
-              </li>
-              <li class="nav-item <?php echo $pagina == 'produtos_seguros'?'active':'' ?>">
-                <a class="nav-link" href="#">
-                  <i class="material-icons">home</i>
-                  <p>Ver produtos</p>
-                </a>
-              </li>
-            </ul>            
-          </div>
-        </li>
-      </ul>
+            </a>
+            <div class="collapse" id="pagesExamples">
+              <ul class="nav">
+                <li class="nav-item <?php echo $pagina == 'julgados' ? 'active':'';?>">
+                  <a class="nav-link" href="julgados.php">
+                    <i class="material-icons">library_books</i>
+                    <span class="sidebar-normal"> Julgados </span>
+                  </a>
+                </li>
+                <li class="nav-item <?php echo $pagina == 'julgados_favoritos' ? 'active':''; ?>">
+                  <a class="nav-link" href="julgados_favoritos.php">
+                    <span class="sidebar-mini"> <i class="material-icons">favorite</i> </span>
+                    <span class="sidebar-normal"> Julgados Salvos </span>
+                  </a>
+                </li>
+                <li class="nav-item <?php echo $pagina == 'pecas' ? 'active':''; ?>">
+                  <a class="nav-link" href="#">
+                    <i class="material-icons">book</i>
+                    <span class="sidebar-normal"> Peças </span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </li>
+          <li class="nav-item <?php echo $pagina == 'configuracoes' ? 'active':''; ?>">
+            <a class="nav-link" href="#">
+              <i class="material-icons">build</i>
+              <p> Configurações </p>
+            </a>
+          </li>
+          <li class="nav-item <?php echo $pagina == 'produtos' ? 'active':''; ?>">
+            <a class="nav-link" href="#">
+              <i class="material-icons">add_shopping_cart</i>
+              <p> Produtos </p>
+            </a>
+          </li>
+          <li class="nav-item <?php echo $pagina == 'faturamento' ? 'active':''; ?>">
+            <a class="nav-link" href="#">
+              <i class="material-icons">payment</i>
+              <p> Faturamento </p>
+            </a>
+          </li>
+        </ul>
     </div>
   </div>
 </body>

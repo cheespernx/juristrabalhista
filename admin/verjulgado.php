@@ -1,12 +1,25 @@
 <?php 
   session_start();
+  $_SESSION['user_id'] = 1;
+  $_SESSION['pagina'] = 'verjulgado';
+  $_SESSION['collapse'] = 'conteudo';
+  $idUsuario = $_SESSION['user_id'];
 
+  require("view/sidebar_admin.php");
   if(isset($_GET['id'])){
     include_once('controller/dbcon.php');
     $id = $_GET['id'];
     $sqlVerJulgado = "SELECT * FROM julgados WHERE id = '$id'";
     $queryVerJulgado = mysqli_query($conn, $sqlVerJulgado);
     $data = mysqli_fetch_assoc($queryVerJulgado);
+
+    $select = "SELECT * FROM julgados_favoritos WHERE julgado = '$id' AND id_usuario = '$idUsuario'";
+    $exec = mysqli_query($conn, $select);
+    $num = mysqli_num_rows($exec);
+
+    $selectComentario = "SELECT * FROM comentarios WHERE julgado = '$id' AND id_usuario = '$idUsuario'";
+		$execComentario = mysqli_query($conn, $selectComentario);
+		$dataComentario = mysqli_fetch_assoc($execComentario);
   }
   
 ?>
@@ -43,150 +56,9 @@
 
 <body class="">
   <div class="wrapper ">
-    <div class="sidebar" data-color="rose" data-background-color="black" data-image="assets/img/sidebar-1.jpg">
-      <!--
-        Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
-
-        Tip 2: you can also add an image using data-image tag
-    -->
-      <div class="logo">
-        <a href="http://www.creative-tim.com" class="simple-text logo-mini">
-          JT
-        </a>
-        <a href="http://www.creative-tim.com" class="simple-text logo-normal">
-          Juris<b>Trabalhista</b>
-        </a>
-      </div>
-      <div class="sidebar-wrapper">
-        <div class="user">
-          <div class="photo">
-          <img src="assets/img/default-avatar.png" />
-          </div>
-          <div class="user-info">
-            <a data-toggle="collapse" href="#collapseExample" class="username">
-              <span>
-                Victor Carvalho
-                <b class="caret"></b>
-              </span>
-            </a>
-            <div class="collapse" id="collapseExample">
-              <ul class="nav">
-                <li class="nav-item">
-                  <a class="nav-link" href="#">
-                    <span class="sidebar-mini"> MP </span>
-                    <span class="sidebar-normal"> Meu Perfil </span>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">
-                    <span class="sidebar-mini"> EP </span>
-                    <span class="sidebar-normal"> Editar Perfil </span>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">
-                    <span class="sidebar-mini"> S </span>
-                    <span class="sidebar-normal"> Sair </span>
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <ul class="nav">
-          <li class="nav-item">
-            <a class="nav-link" href="examples/dashboard.html">
-              <i class="material-icons">dashboard</i>
-              <p> Dashboard </p>
-            </a>
-          </li>
-          <li class="nav-item active">
-            <a class="nav-link" data-toggle="collapse" href="#pagesExamples">
-              <i class="material-icons">image</i>
-              <p> Conteúdo
-                <b class="caret"></b>
-              </p>
-            </a>
-            <div class="collapse" id="pagesExamples">
-              <ul class="nav">
-                <li class="nav-item active">
-                  <a class="nav-link" href="julgados.php">
-                    <span class="sidebar-mini"> J </span>
-                    <span class="sidebar-normal"> Julgados </span>
-                  </a>
-                </li>
-                <li class="nav-item ">
-                  <a class="nav-link" href="examples/pages/rtl.html">
-                    <span class="sidebar-mini"> P </span>
-                    <span class="sidebar-normal"> Peças </span>
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </li>
-          <li class="nav-item ">
-            <a class="nav-link" href="examples/dashboard.html">
-              <i class="material-icons">build</i>
-              <p> Configurações </p>
-            </a>
-          </li>
-          <li class="nav-item ">
-            <a class="nav-link" href="examples/dashboard.html">
-              <i class="material-icons">add_shopping_cart</i>
-              <p> Produtos </p>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
     <div class="main-panel">
       <!-- Navbar -->
-      <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top ">
-        <div class="container-fluid">
-          <div class="navbar-wrapper">
-            <div class="navbar-minimize">
-              <button id="minimizeSidebar" class="btn btn-just-icon btn-white btn-fab btn-round">
-                <i class="material-icons text_align-center visible-on-sidebar-regular">more_vert</i>
-                <i class="material-icons design_bullet-list-67 visible-on-sidebar-mini">view_list</i>
-              </button>
-            </div>
-            <a class="navbar-brand" href="#pablo">Ver Julgado</a>
-          </div>
-          <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="navbar-toggler-icon icon-bar"></span>
-            <span class="navbar-toggler-icon icon-bar"></span>
-            <span class="navbar-toggler-icon icon-bar"></span>
-          </button>
-          <div class="collapse navbar-collapse justify-content-end">
-            <ul class="navbar-nav">
-              <li class="nav-item dropdown">
-                <a class="nav-link" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <i class="material-icons">notifications</i>
-                  <span class="notification">5</span>
-                  <p class="d-lg-none d-md-block">
-                    Some Actions
-                  </p>
-                </a>
-              </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link" href="#pablo" id="navbarDropdownProfile" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <i class="material-icons">person</i>
-                  <p class="d-lg-none d-md-block">
-                    Account
-                  </p>
-                </a>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownProfile">
-                  <a class="dropdown-item" href="#">Perfil</a>
-                  <a class="dropdown-item" href="#">Configurações</a>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="#">Sair</a>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
+      <?php require("view/header_admin.php"); ?>
       <!-- End Navbar -->
       <div class="content">
         <div class="container-fluid">
@@ -233,7 +105,42 @@
                       <hr>
                       <p><b>Ano:</b> <?php echo $data['ano']; ?></p>
                     </div>
+                    <hr>
+                    <div class="form-group">
+                      <div class="row justify-content-md-center">
+                        <div class="col-md-6">
+                          <a href="controller/<?php echo $num > 0 ? 'desfavoritar':'favoritar' ?>_julgado.php?id=<?php echo $data['id']; ?>" class="btn btn-round btn-block btn-<?php echo $num > 0 ? 'warning':'success' ?> "> <i class="material-icons"><?php echo $num > 0 ? 'favorite_border':'favorite' ?></i> <?php echo $num > 0 ? 'Desfavoritar':'Favoritar' ?></a>
+                        </div>
+                        <div class="col-md-6">
+                          <a href="editar_julgado.php?id=<?php echo $data['id']; ?>" class="btn btn-round btn-primary btn-block"> <i class="material-icons">edit</i> Editar </a>
+                        </div>
+                      </div>                 
+                    </div>
                   </div>
+                </div>
+                <div class="card">
+                  <form action="controller/comentar_julgado.php" method="POST">
+                    <input type="hidden" name="id" value="<?php echo $data['id']; ?>"/>
+                    <input type="hidden" name="id_usuario" value="<?php echo $idUsuario; ?>"/>
+                    <div class="card-header card-header-icon card-header-primary">
+                      <div class="card-icon">
+                        <i class="material-icons">add_comment</i>
+                      </div>
+                      <h4 class="card-title ">Comentar Julgado</h4>
+                    </div>
+                    <div class="card-body">
+                      <div class="form-group mt-3">
+                        <textarea id="editor1" name="comentario" placeholder="Corpo do Julgado"><?php echo $dataComentario['comentario']; ?></textarea>
+                      </div>
+                      <div class="form-group">
+                        <div class="row justify-content-md-center">
+                          <div class="col-md-6">
+                            <button type="submit" class="btn btn-primary btn-round btn-block"><i class='material-icons'>add_comment</i> Comentar</button>
+                          </div>                        
+                        </div>                 
+                      </div>
+                    </div>
+                  </form>
                 </div>
                 <!-- end content-->
                 <div class="card-footer">
@@ -250,6 +157,7 @@
       </div>
     </div>
   </div>
+
   <div class="fixed-plugin">
     <div class="dropdown show-dropdown">
       <a href="#" data-toggle="dropdown">
@@ -570,25 +478,79 @@
     // Alert Config
     var sucesso = <?php echo $_SESSION['sucesso']; $_SESSION['sucesso'] = ''; ?>;
     if(sucesso == 1){
-      var notify = $.notify('<strong>Julgado</strong> adicionado com sucesso.', {
+      var notify = $.notify('<div class="alert-icon"><i class="material-icons">check</i></div> <strong>Julgado</strong> adicionado com sucesso.', {
         icon: 'glyphicon glyphicon-alert',
         type: 'success',
         allow_dismiss: true
       });
     } else if(sucesso == 2){
-      var notify = $.notify('<strong>Erro: </strong> Os campos não podem estar vazios.', {
+      var notify = $.notify('<div class="alert-icon"><i class="material-icons">warning</i></div> <strong>Erro: </strong> Os campos não podem estar vazios.', {
         icon: 'glyphicon glyphicon-alert',
         type: 'danger',
         allow_dismiss: true
       });
     } else if(sucesso == 3){
-      var notify = $.notify('<strong>Erro:</strong> Julgado não adicionado.', {
+      var notify = $.notify('<div class="alert-icon"><i class="material-icons">error_outline</i></div> <strong>Erro:</strong> Julgado não adicionado.', {
         icon: 'glyphicon glyphicon-alert',
         type: 'danger',
         allow_dismiss: true
       });
     } else if(sucesso == 4){
-      var notify = $.notify('<strong>Tarefa</strong> atualizada com sucesso.', {
+      var notify = $.notify('<div class="alert-icon"><i class="material-icons">warning</i></div> <strong>Julgado</strong> excluído com sucesso.', {
+        icon: 'glyphicon glyphicon-alert',
+        type: 'warning',
+        allow_dismiss: true
+      });
+    } else if(sucesso == 5){
+      var notify = $.notify('<div class="alert-icon"><i class="material-icons">error_outline</i></div> <strong>Erro:</strong>Julgado não excluído.', {
+        icon: 'glyphicon glyphicon-alert',
+        type: 'danger',
+        allow_dismiss: true
+      });
+    } else if(sucesso == 6){
+      var notify = $.notify('<div class="alert-icon"><i class="material-icons">error_outline</i></div> <strong>Erro:</strong> Selecione um Julgado.', {
+        icon: 'glyphicon glyphicon-alert',
+        type: 'danger',
+        allow_dismiss: true
+      });
+    } else if(sucesso == 7){
+      var notify = $.notify('<div class="alert-icon"><i class="material-icons">favorite</i></div> <strong>Julgado</strong> favoritado com sucesso.', {
+        icon: 'glyphicon glyphicon-alert',
+        type: 'success',
+        allow_dismiss: true
+      });
+    } else if(sucesso == 8){
+      var notify = $.notify('<div class="alert-icon"><i class="material-icons">error_outline</i></div> <strong>Erro: </strong> Julgado não favoritado, tente novamente mais tarde.', {
+        icon: 'glyphicon glyphicon-alert',
+        type: 'danger',
+        allow_dismiss: true
+      });
+    } else if(sucesso == 9){
+      var notify = $.notify('<div class="alert-icon"><i class="material-icons">favorite</i></div> <strong>Julgado</strong> desfavoritado com sucesso.', {
+        icon: 'glyphicon glyphicon-alert',
+        type: 'success',
+        allow_dismiss: true
+      });
+    } else if(sucesso == 10){
+      var notify = $.notify('<div class="alert-icon"><i class="material-icons">favorite_border</i></div> <strong>Julgado</strong> atualizado com sucesso.', {
+        icon: 'glyphicon glyphicon-alert',
+        type: 'success',
+        allow_dismiss: true
+      });
+    } else if(sucesso == 11){
+      var notify = $.notify('<div class="alert-icon"><i class="material-icons">favorite_border</i></div> <strong>Erro: </strong> Julgado não atualizado.', {
+        icon: 'glyphicon glyphicon-alert',
+        type: 'danger',
+        allow_dismiss: true
+      });
+    } else if(sucesso == 12){
+      var notify = $.notify('<div class="alert-icon"><i class="material-icons">favorite_border</i></div> <strong>Comentário</strong> adicionado com sucesso.', {
+        icon: 'glyphicon glyphicon-alert',
+        type: 'success',
+        allow_dismiss: true
+      });
+    } else if(sucesso == 13){
+      var notify = $.notify('<div class="alert-icon"><i class="material-icons">favorite_border</i></div> <strong>Erro: </strong> Comentário não adicionado.', {
         icon: 'glyphicon glyphicon-alert',
         type: 'danger',
         allow_dismiss: true
