@@ -1,10 +1,13 @@
 <?php 
   session_start();
-  $_SESSION['user_id'] = 1;
+  require("../validate.php");
+  $tipoUser = $_SESSION['tipo_user'];
+  if($tipoUser == 'admin'){
+    header('Location: ../admin/index.php');
+  }
   $_SESSION['pagina'] = 'verjulgado';
   $_SESSION['collapse'] = 'conteudo';
   $idUsuario = $_SESSION['user_id'];
-
   require("view/sidebar_admin.php");
   if(isset($_GET['id'])){
     include_once('controller/dbcon.php');
@@ -121,9 +124,9 @@
                     <input type="hidden" name="id_usuario" value="<?php echo $idUsuario; ?>"/>
                     <div class="card-header card-header-icon card-header-primary">
                       <div class="card-icon">
-                        <i class="material-icons">add_comment</i>
+                        <i class="material-icons">note_add</i>
                       </div>
-                      <h4 class="card-title ">Comentar Julgado</h4>
+                      <h4 class="card-title ">Anotações</h4>
                     </div>
                     <div class="card-body">
                       <div class="form-group mt-3">
@@ -132,7 +135,7 @@
                       <div class="form-group">
                         <div class="row justify-content-md-center">
                           <div class="col-md-6">
-                            <button type="submit" class="btn btn-primary btn-round btn-block"><i class='material-icons'>add_comment</i> Comentar</button>
+                            <button type="submit" class="btn btn-primary btn-round btn-block"><i class='material-icons'>create</i> Anotar</button>
                           </div>                        
                         </div>                 
                       </div>

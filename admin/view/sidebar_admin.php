@@ -46,26 +46,20 @@ Tip 2: you can also add an image using data-image tag
           <div class="user-info">
             <a data-toggle="collapse" href="#collapseExample" class="username">
               <span>
-                Victor Carvalho
+                <?php echo $_SESSION['user']; ?>
                 <b class="caret"></b>
               </span>
             </a>
             <div class="collapse" id="collapseExample">
               <ul class="nav">
-                <li class="nav-item">
-                  <a class="nav-link" href="#">
+                <li class="nav-item <?php echo $pagina == 'user' ? 'active':''; ?>">
+                  <a class="nav-link" href="user.php">
                     <i class="material-icons">person</i>
                     <span class="sidebar-normal"> Meu Perfil </span>
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="#">
-                    <i class="material-icons">edit</i>
-                    <span class="sidebar-normal"> Editar Perfil </span>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="sair.php">
+                  <a class="nav-link" href="../sair.php">
                     <i class="material-icons">close</i>
                     <span class="sidebar-normal"> Sair </span>
                   </a>
@@ -75,15 +69,15 @@ Tip 2: you can also add an image using data-image tag
           </div>
         </div>
         <ul class="nav">
-          <li class="nav-item">
-            <a class="nav-link" href="examples/dashboard.html">
+          <li class="nav-item <?php echo $pagina == 'index' ? 'active':''; ?>">
+            <a class="nav-link" href="index.php">
               <i class="material-icons">dashboard</i>
               <p> Dashboard </p>
             </a>
           </li>
           <li class="nav-item <?php echo $collapse == 'conteudo' ? 'active':''; ?>">
             <a class="nav-link" data-toggle="collapse" href="#pagesExamples">
-              <i class="material-icons">image</i>
+              <i class="material-icons">sort</i>
               <p> Conteúdo
                 <b class="caret"></b>
               </p>
@@ -99,13 +93,13 @@ Tip 2: you can also add an image using data-image tag
                 <li class="nav-item <?php echo $pagina == 'julgados_favoritos' ? 'active':''; ?>">
                   <a class="nav-link" href="julgados_favoritos.php">
                     <span class="sidebar-mini"> <i class="material-icons">favorite</i> </span>
-                    <span class="sidebar-normal"> Julgados Salvos </span>
+                    <span class="sidebar-normal"> Meus Julgados Salvos </span>
                   </a>
                 </li>
                 <li class="nav-item <?php echo $pagina == 'pecas' ? 'active':''; ?>">
                   <a class="nav-link" href="#">
-                    <i class="material-icons">book</i>
-                    <span class="sidebar-normal"> Peças </span>
+                    <i class="material-icons">menu_book</i>
+                    <span class="sidebar-normal"> Modelos de Peças </span>
                   </a>
                 </li>
               </ul>

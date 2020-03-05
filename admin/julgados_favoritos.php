@@ -1,12 +1,17 @@
 <?php 
   session_start();
+  require("../validate.php");
+  $tipoUser = $_SESSION['tipo_user'];
+  if($tipoUser == 'membro'){
+    header('Location: ../membro/index.php');
+  }
+
   $_SESSION['pagina'] = 'julgados_favoritos';
   $_SESSION['collapse'] = 'conteudo';
-  $_SESSION['user_id'] = 1;
 	$user_id = $_SESSION['user_id'];
   require("view/sidebar_admin.php");
   include_once('controller/dbcon.php');
-
+  
 	$sql = "SELECT a.id, a.titulo, a.categoria, a.origem, a.ano, b.id_usuario, b.julgado FROM julgados a INNER JOIN julgados_favoritos b ON a.id = b.julgado AND b.id_usuario = '$user_id'";
   $query = mysqli_query($conn, $sql);
 	

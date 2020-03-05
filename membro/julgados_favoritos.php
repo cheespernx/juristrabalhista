@@ -1,8 +1,12 @@
 <?php 
   session_start();
+  require("../validate.php");
+  $tipoUser = $_SESSION['tipo_user'];
+  if($tipoUser == 'admin'){
+    header('Location: ../admin/index.php');
+  }
   $_SESSION['pagina'] = 'julgados_favoritos';
   $_SESSION['collapse'] = 'conteudo';
-  $_SESSION['user_id'] = 1;
 	$user_id = $_SESSION['user_id'];
   require("view/sidebar_admin.php");
   include_once('controller/dbcon.php');
