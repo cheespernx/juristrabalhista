@@ -1,6 +1,5 @@
 <?php 
 	session_start();
-	$_SESSION['user_id'] = 1;
 
 	if(isset($_POST['id']) && isset($_POST['id_usuario']) && isset($_POST['comentario'])){
 		include_once('dbcon.php');

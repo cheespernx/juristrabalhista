@@ -2,8 +2,8 @@
   session_start();
   require("../validate.php");
   $tipoUser = $_SESSION['tipo_user'];
-  if($tipoUser == 'admin'){
-    header('Location: ../admin/index.php');
+  if($tipoUser == 'membro'){
+    header('Location: ../membro/index.php');
   }
   $_SESSION['pagina'] = 'user';
   $_SESSION['collapse'] = 'profile';

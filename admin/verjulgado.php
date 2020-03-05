@@ -112,14 +112,14 @@
                     </div>
                     <hr>
                     <div class="form-group">
-                      <div class="row justify-content-md-center">
+                      <div class="row">
                         <div class="col-md-6">
-                          <a href="controller/<?php echo $num > 0 ? 'desfavoritar':'favoritar' ?>_julgado.php?id=<?php echo $data['id']; ?>" class="btn btn-round btn-block btn-<?php echo $num > 0 ? 'warning':'success' ?> "> <i class="material-icons"><?php echo $num > 0 ? 'favorite_border':'favorite' ?></i> <?php echo $num > 0 ? 'Desfavoritar':'Favoritar' ?></a>
+                          <a href="controller/<?php echo $num > 0 ? 'desfavoritar':'favoritar' ?>_julgado.php?id=<?php echo $data['id']; ?>" class="btn btn-round btn-block btn-<?php echo $num > 0 ? 'warning':'success' ?> "> <i class="material-icons"><?php echo $num > 0 ? 'favorite_border':'favorite' ?></i> </a>
                         </div>
                         <div class="col-md-6">
-                          <a href="editar_julgado.php?id=<?php echo $data['id']; ?>" class="btn btn-round btn-primary btn-block"> <i class="material-icons">edit</i> Editar </a>
-                        </div>
-                      </div>                 
+                          <a href="editar_julgado.php?id=<?php echo $data['id']; ?>" class="btn btn-round btn-primary btn-block"> <i class="material-icons">edit</i> </a>
+                        </div>   
+                      </div>             
                     </div>
                   </div>
                 </div>

@@ -15,10 +15,10 @@
     $numero = $_POST['numero'];
     $biografia = $_POST['biografia'];
 
-		$testUsername = "SELECT * FROM usuarios WHERE username = '$user'";
-    $result = mysqli_query($conn, $testUsername);
-    $data = mysqli_fetch_assoc($result);
-		$row = mysqli_num_rows($result);
+	$testUsername = "SELECT * FROM usuarios WHERE username = '$user'";
+  $result = mysqli_query($conn, $testUsername);
+  $data = mysqli_fetch_assoc($result);
+	$row = mysqli_num_rows($result);
   
     $id = $data['id'];
 
