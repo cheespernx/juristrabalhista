@@ -2,16 +2,19 @@
   session_start();
   require("../validate.php");
   $tipoUser = $_SESSION['tipo_user'];
-  if($tipoUser == 'membro'){
-    header('Location: ../membro/index.php');
+  if($tipoUser == 'admin'){
+    header('Location: ../admin/index.php');
   }
-  
   $_SESSION['pagina'] = 'user';
   $_SESSION['collapse'] = 'profile';
   $idUsuario = $_SESSION['user_id'];
   require("view/sidebar_admin.php");
+
   include_once('controller/dbcon.php');
-  
+
+  $sql = "SELECT * FROM usuarios WHERE id = '$idUsuario'";
+  $query = mysqli_query($conn, $sql);
+  $data = mysqli_fetch_assoc($query);
 
 ?>
 
@@ -24,7 +27,7 @@
   <link rel="icon" type="image/png" href="assets/img/favicon.png">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <title>
-    Administração Juristrabalhista
+    Juristrabalhista
   </title>
   <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
   <!--     Fonts and icons     -->
@@ -67,66 +70,66 @@
                   </h4>
                 </div>
                 <div class="card-body">
-                  <form>
+                  <form method="POST" action="editar_informacoes_conta.php">
                     <div class="row">
                       <div class="col-md-4">
                         <div class="form-group">
-                          <label class="bmd-label-floating">Username</label>
-                          <input type="text" class="form-control">
+                          <label >Username</label>
+                          <input type="text" class="form-control" name="user" value="<?php echo $data['username']; ?>">
                         </div>
                       </div>
                       <div class="col-md-8">
                         <div class="form-group">
-                          <label class="bmd-label-floating">E-mail</label>
-                          <input type="email" class="form-control">
+                          <label >E-mail</label>
+                          <input type="email" class="form-control" name="email" value="<?php echo $data['email']; ?>">
                         </div>
                       </div>
                     </div>
                     <div class="row">
                       <div class="col-md-12">
                         <div class="form-group">
-                          <label class="bmd-label-floating">Nome Completo</label>
-                          <input type="text" class="form-control">
+                          <label >Nome Completo</label>
+                          <input type="text" class="form-control" name="nome" value="<?php echo $data['nome']; ?>">
                         </div>
                       </div>
                     </div>
                     <div class="row">
                       <div class="col-md-4">
                         <div class="form-group">
-                          <label class="bmd-label-floating">CEP</label>
-                          <input type="text" class="form-control">
+                          <label >CEP</label>
+                          <input type="text" class="form-control" id="cep" value="<?php echo $data['cep']; ?>" name="cep" size="10" inputmode="numeric" data-mask-selectonfocus="true" data-mask="99.999-999" onblur="pesquisacep(this.value);" >
                         </div>
                       </div>
                       <div class="col-md-4">
                         <div class="form-group">
-                          <label class="bmd-label-floating">País</label>
-                          <input type="text" class="form-control">
+                          <label >Rua</label>
+                          <input type="text" class="form-control" id="rua" value="<?php echo $data['rua']; ?>" name="rua">
                         </div>
                       </div>
                       <div class="col-md-4">
                         <div class="form-group">
-                          <label class="bmd-label-floating">Cidade</label>
-                          <input type="text" class="form-control">
+                          <label >Cidade</label>
+                          <input type="text" class="form-control" value="<?php echo $data['cidade']; ?>" id="cidade" name="cidade">
                         </div>
                       </div>
                     </div>
                     <div class="row">
                       <div class="col-md-4">
                         <div class="form-group">
-                          <label class="bmd-label-floating">Estado</label>
-                          <input type="text" class="form-control">
+                          <label >Estado</label>
+                          <input type="text" class="form-control" value="<?php echo $data['uf']; ?>" id="uf" name="uf">
                         </div>
                       </div>
                       <div class="col-md-4">
                         <div class="form-group">
-                          <label class="bmd-label-floating">Endereço</label>
-                          <input type="text" class="form-control">
+                          <label >Bairro</label>
+                          <input type="text" class="form-control" value="<?php echo $data['bairro']; ?>" id="bairro" name="bairro">
                         </div>
                       </div>
                       <div class="col-md-4">
                         <div class="form-group">
-                          <label class="bmd-label-floating">Número</label>
-                          <input type="text" class="form-control">
+                          <label >Número</label>
+                          <input type="text" class="form-control" value="<?php echo $data['numero']; ?>" id="numero" name="numero">
                         </div>
                       </div>
                     </div>
@@ -136,7 +139,7 @@
                           <label>Biografia</label>
                           <div class="form-group">
                             <label class="bmd-label-floating"> Escreva aqui um pouco sobre você.</label>
-                            <textarea class="form-control" rows="5"></textarea>
+                            <textarea class="form-control" rows="5" id="biografia" name="biografia"><?php echo $data['biografia']; ?></textarea>
                           </div>
                         </div>
                       </div>
@@ -155,10 +158,10 @@
                   </a>
                 </div>
                 <div class="card-body">
-                  <h6 class="card-category text-gray">Membro Premium</h6>
-                  <h4 class="card-title">Seu nome</h4>
+                  <h6 class="card-category text-gray">Membro <?php echo $data['plano']; ?></h6>
+                  <h4 class="card-title"><?php echo $data['nome']; ?></h4>
                   <p class="card-description">
-                    Aqui estará a sua Biografia quando terminar.
+                    <?php echo $data['biografia']; ?>
                   </p>
                 </div>
               </div>
@@ -313,6 +316,7 @@
   <script src="assets/js/material-dashboard.js?v=2.1.0" type="text/javascript"></script>
   <!-- Material Dashboard DEMO methods, don't include it in your project! -->
   <script src="assets/demo/demo.js"></script>
+  <script src="assets/js/plugins/cep.js"></script>
  <script>
     $('#confirm-delete').on('show.bs.modal', function(e) {
       $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
@@ -556,7 +560,7 @@
         allow_dismiss: true
       });
     } else if(sucesso == 9){
-      var notify = $.notify('<div class="alert-icon"><i class="material-icons">favorite_border</i></div> <strong>Julgado</strong> desfavoritado com sucesso.', {
+      var notify = $.notify('<div class="alert-icon"><i class="material-icons">favorite</i></div> <strong>Julgado</strong> desfavoritado com sucesso.', {
         icon: 'glyphicon glyphicon-alert',
         type: 'success',
         allow_dismiss: true
@@ -573,7 +577,43 @@
         type: 'danger',
         allow_dismiss: true
       });
-    }
+    } else if(sucesso == 12){
+      var notify = $.notify('<div class="alert-icon"><i class="material-icons">favorite_border</i></div> <strong>Comentário</strong> adicionado com sucesso.', {
+        icon: 'glyphicon glyphicon-alert',
+        type: 'success',
+        allow_dismiss: true
+      });
+    } else if(sucesso == 13){
+      var notify = $.notify('<div class="alert-icon"><i class="material-icons">favorite_border</i></div> <strong>Erro: </strong> Comentário não adicionado.', {
+        icon: 'glyphicon glyphicon-alert',
+        type: 'danger',
+        allow_dismiss: true
+      });
+    } else if(sucesso == 14){
+      var notify = $.notify('<div class="alert-icon"><i class="material-icons">check</i></div> <strong>Conta </strong> atualizada com sucesso.', {
+        icon: 'glyphicon glyphicon-alert',
+        type: 'success',
+        allow_dismiss: true
+      });
+    } else if(sucesso == 15){
+      var notify = $.notify('<div class="alert-icon"><i class="material-icons">check</i></div> <strong>Erro: </strong> Conta não atualizada. Tente novamente mais tarde.', {
+        icon: 'glyphicon glyphicon-alert',
+        type: 'danger',
+        allow_dismiss: true
+      });
+    } else if(sucesso == 16){
+      var notify = $.notify('<div class="alert-icon"><i class="material-icons">error_outline</i></div> <strong>Erro: </strong> Conta desconhecida.', {
+        icon: 'glyphicon glyphicon-alert',
+        type: 'danger',
+        allow_dismiss: true
+      });
+    } else if(sucesso == 17){
+      var notify = $.notify('<div class="alert-icon"><i class="material-icons">error_outline</i></div> <strong>Erro: </strong> Este usuário já está sendo utilizado.', {
+        icon: 'glyphicon glyphicon-alert',
+        type: 'danger',
+        allow_dismiss: true
+      });
+    } 
     
   </script>
 </body>
