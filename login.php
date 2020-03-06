@@ -31,8 +31,11 @@
       $_SESSION['user_id'] = $id;
       $_SESSION['p_hash'] = $stored_hash;
       $_SESSION['tipo_user'] = $tipoUser;
+      
 
-      if($tipoUser == 'admin'){
+      $sql = "UPDATE usuarios SET ultimo_acesso = '$ultimo_acesso' WHERE id = '$id'";
+      if(mysqli_query($conn, $sql)){
+        if($tipoUser == 'admin'){
         $_SESSION['not-auth'] = false;
         unset($_SESSION['erro_login']);
         header('Location: admin/');
@@ -41,6 +44,7 @@
         $_SESSION['not-auth'] = false;
         unset($_SESSION['erro_login']);
         header('Location: membro/');
+      }
       }
 
     } else {

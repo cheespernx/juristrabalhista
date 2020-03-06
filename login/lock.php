@@ -64,7 +64,7 @@
                   </div>
                 </div>
                 <div class="card-body ">
-                  <h4 class="card-title"><?php echo $_SESSION['nome_tratado'];?></h4>
+                  <h4 class="card-title"><?php echo $_SESSION['user'];?></h4>
                   <div class="form-group">
                     <input type="hidden"name="token_acesso" value="<?php echo $_SESSION['token_acesso']; ?>">
                     <label for="pass" class="bmd-label-floating">Insira sua senha</label>
