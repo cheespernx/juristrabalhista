@@ -14,6 +14,11 @@
   
 	$sql = "SELECT a.id, a.titulo, a.categoria, a.origem, a.ano, b.id_usuario, b.julgado FROM julgados a INNER JOIN julgados_favoritos b ON a.id = b.julgado AND b.id_usuario = '$user_id'";
   $query = mysqli_query($conn, $sql);
+  $num = mysqli_num_rows($query);
+  if($num == 0){
+    echo "<script>var vazio = 1</script>";
+    header('Location: julgados.php');
+  }
 	
 ?>
 
@@ -111,7 +116,7 @@
                           <td class="text-right">
                             <a href="verjulgado.php?id=<?php echo $data['id']; ?>" class="btn btn-link btn-info btn-just-icon like" data-placement="top" title="Ver"><i class="material-icons" >remove_red_eye</i></a>
                             <a href="#" class="btn btn-link btn-warning btn-just-icon edit" data-placement="top" title="Editar"><i class="material-icons">edit</i></a>
-                            <a href="controller/desfavoritar_julgado.php?id=<?php echo $data['id']; ?>" class="btn btn-link btn-rose btn-just-icon edit" data-placement="top" title="Desfavoritar"><i class="material-icons">favorite_border</i></a>
+                            <a id="<?php echo $data['id']; ?>" data-status="<?php echo $data['id']; ?>" class="btn btn-link btn-rose btn-just-icon edit btn-favoritar" data-placement="top" title="<?php echo $num > 0 ? 'Desfavoritar':'Favoritar' ?>"><i class="material-icons" id="icon_favorite"><?php echo $num > 0 ? 'favorite_border':'favorite' ?></i></a>
                             <a href="#" class="btn btn-link btn-danger btn-just-icon remove" data-href="controller/excluir_julgado.php?id=<?php echo $data['id']; ?>" data-toggle="modal" data-target="#confirm-delete" data-placement="top" title="Excluir"><i class="material-icons">close</i></a>
                           </td>
                         </tr>
@@ -210,25 +215,6 @@
             <img src="assets/img/sidebar-4.jpg" alt="">
           </a>
         </li>
-        <li class="button-container">
-          <a href="https://www.creative-tim.com/product/material-dashboard-pro" target="_blank" class="btn btn-rose btn-block btn-fill">Buy Now</a>
-          <a href="https://demos.creative-tim.com/material-dashboard-pro/docs/2.1/getting-started/introduction.html" target="_blank" class="btn btn-default btn-block">
-            Documentation
-          </a>
-          <a href="https://www.creative-tim.com/product/material-dashboard" target="_blank" class="btn btn-info btn-block">
-            Get Free Demo!
-          </a>
-        </li>
-        <li class="button-container github-star">
-          <a class="github-button" href="https://github.com/creativetimofficial/ct-material-dashboard-pro" data-icon="octicon-star" data-size="large" data-show-count="true" aria-label="Star ntkme/github-buttons on GitHub">Star</a>
-        </li>
-        <li class="header-title">Thank you for 95 shares!</li>
-        <li class="button-container text-center">
-          <button id="twitter" class="btn btn-round btn-twitter"><i class="fa fa-twitter"></i> &middot; 45</button>
-          <button id="facebook" class="btn btn-round btn-facebook"><i class="fa fa-facebook-f"></i> &middot; 50</button>
-          <br>
-          <br>
-        </li>
       </ul>
     </div>
   </div>
@@ -294,6 +280,41 @@
   <script src="assets/js/material-dashboard.js?v=2.1.0" type="text/javascript"></script>
   <!-- Material Dashboard DEMO methods, don't include it in your project! -->
   <script src="assets/demo/demo.js"></script>
+  <script>
+    $('.btn-favoritar').click(function(){
+
+      var btn = $(this);
+      var icon = btn.find("i").attr('id');
+
+      var id = btn.attr('id');
+      var status = btn.attr('title');
+      var url = "controller/favoritar_julgado.php";
+      
+
+      $.ajax({
+        url : url,
+        data: {
+          id: id
+        },
+        method: 'POST',
+        beforeSend: function(){
+          if(status == 'Favoritar'){
+            btn.attr("title", "Desfavoritar");
+            btn.html("<i class='material-icons' id='icon_favorite'>favorite_border</i>");
+          } else {
+            btn.attr("title", "Favoritar");
+            btn.html("<i class='material-icons' id='icon_favorite'>favorite</i>");
+          }
+        },complete: function(num){
+          if(num == 0){
+            window.location = 'julgados.php';
+          }
+        }
+        
+      });
+    });
+  </script>
+
  <script>
     $('#confirm-delete').on('show.bs.modal', function(e) {
       $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));

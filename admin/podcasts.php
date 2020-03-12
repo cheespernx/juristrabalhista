@@ -6,17 +6,9 @@
     header('Location: ../membro/index.php');
   }
   
-  $_SESSION['pagina'] = 'index';
+  $_SESSION['pagina'] = 'podcast';
   require("view/sidebar_admin.php");
-  
-  $sql = "SELECT * FROM usuarios";
-  $query = mysqli_query($conn, $sql);
-  $qtd_usuarios = mysqli_num_rows($query);
 
-  $sqlJulgados = "SELECT * FROM julgados";
-  $queryJulgados = mysqli_query($conn, $sqlJulgados);
-  $qtd_Julgados = mysqli_num_rows($queryJulgados);
-  
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -59,135 +51,54 @@
       <div class="content">
         <div class="content">
           <div class="container-fluid">
-          <div class="row">
-              <div class="col-lg-3 col-md-6 col-sm-6">
-                <div class="card card-stats">
-                  <div class="card-header card-header-warning card-header-icon">
-                    <div class="card-icon">
-                      <i class="material-icons">person</i>
-                    </div>
-                    <p class="card-category">Usuários registrados</p>
-                    <h3 class="card-title"><?php echo $qtd_usuarios; ?></h3>
-                  </div>
-                  <div class="card-footer">
-                    <div class="stats">
-                      <i class="material-icons text-warning">person</i>
-                      <a href="#pablo">Ver Lista</a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-lg-3 col-md-6 col-sm-6">
-                <div class="card card-stats">
-                  <div class="card-header card-header-rose card-header-icon">
-                    <div class="card-icon">
-                      <i class="fas fa-gavel"></i>
-                    </div>
-                    <p class="card-category">Julgados disponíveis</p>
-                    <h3 class="card-title"><?php echo $qtd_Julgados; ?></h3>
-                  </div>
-                  <div class="card-footer">
-                    <div class="stats">
-                      <i class="material-icons">remove_red_eye</i>
-                      <a href="julgados.php">Ver Julgados</a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-lg-3 col-md-6 col-sm-6">
-                <div class="card card-stats">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="card">
                   <div class="card-header card-header-success card-header-icon">
                     <div class="card-icon">
                       <i class="material-icons">mic</i>
                     </div>
-                    <p class="card-category">PodCasts Gravados</p>
-                    <h3 class="card-title">37</h3>
-                  </div>
-                  <div class="card-footer">
-                    <div class="stats">
-                      <i class="material-icons">audiotrack</i>
-                      <a href="julgados.php">Ver PodCasts</a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-lg-3 col-md-6 col-sm-6">
-                <div class="card card-stats">
-                  <div class="card-header card-header-info card-header-icon">
-                    <div class="card-icon">
-                      <i class="fas fa-copy"></i>
-                    </div>
-                    <p class="card-category">Peças disponíveis</p>
-                    <h3 class="card-title">4.530</h3>
-                  </div>
-                  <div class="card-footer">
-                    <div class="stats">
-                      <i class="material-icons">edit</i>
-                      <a href="julgados.php">Ver Peças</a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="card">
-                  <div class="card-header card-header-primary card-header-icon">
-                    <div class="card-icon">
-                      <i class="material-icons">person</i>
-                    </div>
-                    <h4 class="card-title">Usuários</h4>
+                    <h4 class="card-title">PodCasts</h4>
                   </div>
                   <div class="card-body">
                     <div class="toolbar">
                       <!--        Here you can write extra buttons/actions for the toolbar              -->
                     </div>
-                    <div class="material-datatables">
-                      <table id="datatables1" class="table table-striped table-no-bordered table-hover datatable" cellspacing="0" width="100%" style="width:100%">
+                    <table id="datatables1" class="table table-striped table-no-bordered table-hover datatable" cellspacing="0" width="100%" style="width:100%">
                         <thead>
                           <tr>
-                            <th>ID</th>
                             <th>Nome</th>
-                            <th>Username</th>
-                            <th>Plano</th>
-                            <th>Data Vencimento</th>
-                            <th>Data Cadastro</th>
-                            <th>Último Acesso</th>
-                            <th class="disabled-sorting text-right">Ações</th>
                           </tr>
                         </thead>
                         <tfoot>
                           <tr>
-                            <th>ID</th>
                             <th>Nome</th>
-                            <th>Username</th>
-                            <th>Plano</th>
-                            <th>Data Vencimento</th>
-                            <th>Data Cadastro</th>
-                            <th>Último Acesso</th>
-                            <th class="text-right">Ações</th>
                           </tr>
                         </tfoot>
                         <tbody>
-                          <?php 
-                            while($data = mysqli_fetch_assoc($query)){ 
-                          ?>
                           <tr>
-                            <td><?php echo $data['id']; ?></td>
-                            <td><?php echo $data['nome']; ?></td>
-                            <td><?php echo $data['username']; ?></td>
-                            <td><?php echo $data['plano']; ?></td>
-                            <td><?php echo $data['data_vencimento']; ?></td>
-                            <td><?php echo $data['data_cadastro']; ?></td>
-                            <td><?php echo $data['ultimo_acesso']; ?></td>
-                            <td class="text-right">
-                              <a href="controller/acesso.php?id=<?php echo $data['id']; ?>" class="btn btn-link btn-rose btn-just-icon edit" data-placement="top" title="<?php echo $data['plano'] == 'premium'?'Bloquear':'Liberar' ?> acesso"><i class="material-icons"><?php echo $data['plano'] == 'premium'?'lock':'lock_open' ?></i></a>
-                            </td>
+                            <td><iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/774798802%3Fsecret_token%3Ds-Ekjzd&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"></iframe></td>
                           </tr>
-                          <?php } ?>
+                          <tr>
+                            <td><iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/774798802%3Fsecret_token%3Ds-Ekjzd&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"></iframe></td>
+                          </tr>
+                          <tr>
+                            <td><iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/774798802%3Fsecret_token%3Ds-Ekjzd&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"></iframe></td>
+                          </tr>
+                          <tr>
+                            <td><iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/774798802%3Fsecret_token%3Ds-Ekjzd&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"></iframe></td>
+                          </tr>
+                          <tr>
+                            <td><iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/774798802%3Fsecret_token%3Ds-Ekjzd&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"></iframe></td>
+                          </tr>
+                          <tr>
+                            <td><iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/774798802%3Fsecret_token%3Ds-Ekjzd&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"></iframe></td>
+                          </tr>
+                          <tr>
+                            <td><iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/774798802%3Fsecret_token%3Ds-Ekjzd&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"></iframe></td>
+                          </tr>
                         </tbody>
                       </table>
-                    </div>
                   </div>
                   <!-- end content-->
                 </div>

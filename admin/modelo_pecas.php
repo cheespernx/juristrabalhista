@@ -5,19 +5,19 @@
   if($tipoUser == 'membro'){
     header('Location: ../membro/index.php');
   }
-  
-  $_SESSION['pagina'] = 'index';
+  $_SESSION['pagina'] = 'peças';
+  $_SESSION['collapse'] = 'conteudo';
+  $idUsuario = $_SESSION['user_id'];
   require("view/sidebar_admin.php");
+  include_once('controller/dbcon.php');
   
-  $sql = "SELECT * FROM usuarios";
-  $query = mysqli_query($conn, $sql);
-  $qtd_usuarios = mysqli_num_rows($query);
+  
 
-  $sqlJulgados = "SELECT * FROM julgados";
-  $queryJulgados = mysqli_query($conn, $sqlJulgados);
-  $qtd_Julgados = mysqli_num_rows($queryJulgados);
-  
+  $sqlListaPecas = "SELECT * FROM pecas";
+  $queryListaPecas = mysqli_query($conn, $sqlListaPecas);
+
 ?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -35,11 +35,20 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
   <!-- CSS Files -->
   <link href="assets/css/material-dashboard.css?v=2.1.0" rel="stylesheet" />
+  
   <!-- CSS Just for demo purpose, don't include it in your project -->
   <link href="assets/demo/demo.css" rel="stylesheet" />
-  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script type="text/javascript" src="assets/ckeditor/ckeditor.js"></script>
+    <script type="text/javascript">
+      window.onload = function()  {
+        CKEDITOR.replace( 'editor1', {
+         filebrowserBrowseUrl: 'assets/ckeditor/ckfinder/ckfinder.html',
+         filebrowserUploadUrl: 'assets/ckeditor/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files'
+       } );
+      };
+    </script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-159918073-1"></script>
-<script src="https://kit.fontawesome.com/37212eb3e5.js" crossorigin="anonymous"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -57,145 +66,143 @@
       <?php require("view/header_admin.php"); ?>
       <!-- End Navbar -->
       <div class="content">
-        <div class="content">
-          <div class="container-fluid">
+        <div class="container-fluid">
           <div class="row">
-              <div class="col-lg-3 col-md-6 col-sm-6">
-                <div class="card card-stats">
-                  <div class="card-header card-header-warning card-header-icon">
-                    <div class="card-icon">
-                      <i class="material-icons">person</i>
-                    </div>
-                    <p class="card-category">Usuários registrados</p>
-                    <h3 class="card-title"><?php echo $qtd_usuarios; ?></h3>
+            <div class="col-md-12">
+              <div class="card">
+                <div class="card-header card-header-primary card-header-icon">
+                  <div class="card-icon">
+                    <i class="material-icons">assignment</i>
                   </div>
-                  <div class="card-footer">
-                    <div class="stats">
-                      <i class="material-icons text-warning">person</i>
-                      <a href="#pablo">Ver Lista</a>
-                    </div>
+                  <h4 class="card-title">Peças</h4>
+                </div>
+                <div class="card-body">
+                  <div class="toolbar">
+                    <!--        Here you can write extra buttons/actions for the toolbar              -->
+                  </div>
+                  <div class="material-datatables">
+                    <table id="datatables1" class="table table-striped table-no-bordered table-hover datatable" cellspacing="0" width="100%" style="width:100%">
+                      <thead>
+                        <tr>
+                          <th>ID</th>
+                          <th>Título</th>
+                          <th>Categoria</th>
+                          <th>Subcategoria</th>
+                          <th>Assunto</th>
+                          <th class="disabled-sorting text-right">Ações</th>
+                        </tr>
+                      </thead>
+                      <tfoot>
+                        <tr>
+                          <th>ID</th>
+                          <th>Título</th>
+                          <th>Categoria</th>
+                          <th>Subcategoria</th>
+                          <th>Assunto</th>
+                          <th class="text-right">Ações</th>
+                        </tr>
+                      </tfoot>
+                      <tbody>
+                        <?php 
+                          while($data = mysqli_fetch_assoc($queryListaPecas)){ 
+                            $id = $data['id'];
+                            
+                            $select = "SELECT * FROM pecas_favoritas WHERE peca = '$id' AND id_usuario = '$idUsuario'";
+                            $exec = mysqli_query($conn, $select);
+                            $num = mysqli_num_rows($exec);
+                        ?>
+                        <tr>
+                          <td><?php echo $data['id']; ?></td>
+                          <td><a href="verpeca.php?id=<?php echo $data['id']; ?>"><?php echo $data['titulo']; ?></a></td>
+                          <td><?php echo $data['categoria']; ?></td>
+                          <td><?php echo $data['subcategoria']; ?></td>
+                          <td><?php echo $data['assunto']; ?></td>
+                          <td class="text-right">
+                            <a href="verpeca.php?id=<?php echo $data['id']; ?>" class="btn btn-link btn-info btn-just-icon like" data-placement="top" title="Ver"><i class="material-icons">remove_red_eye</i></a>
+                            <a href="editar_peca.php?id=<?php echo $data['id']; ?>" class="btn btn-link btn-warning btn-just-icon edit" data-placement="top" title="Editar"><i class="material-icons">edit</i></a>
+                            <a id="<?php echo $data['id']; ?>" data-status="<?php echo $data['id']; ?>" class="btn btn-link btn-rose btn-just-icon edit btn-favoritar" data-placement="top" title="<?php echo $num > 0 ? 'Desfavoritar':'Favoritar' ?>"><i class="material-icons" id="icon_favorite"><?php echo $num > 0 ? 'favorite_border':'favorite' ?></i></a>
+                            <a href="#" class="btn btn-link btn-danger btn-just-icon remove" data-href="controller/excluir_peca.php?id=<?php echo $data['id']; ?>" data-toggle="modal" data-target="#confirm-delete" data-placement="top" title="Excluir"><i class="material-icons">close</i></a>
+                          </td>
+                        </tr>
+                        <?php } ?>
+                      </tbody>
+                    </table>
                   </div>
                 </div>
+                <!-- end content-->
               </div>
-              <div class="col-lg-3 col-md-6 col-sm-6">
-                <div class="card card-stats">
-                  <div class="card-header card-header-rose card-header-icon">
-                    <div class="card-icon">
-                      <i class="fas fa-gavel"></i>
-                    </div>
-                    <p class="card-category">Julgados disponíveis</p>
-                    <h3 class="card-title"><?php echo $qtd_Julgados; ?></h3>
+              <!--  end card  -->
+            </div>
+            <!-- end col-md-8 -->
+            <div class="col-md-12">
+              <div class="card ">
+                <div class="card-header card-header-rose card-header-icon">
+                  <div class="card-icon">
+                    <i class="material-icons">add</i>
                   </div>
-                  <div class="card-footer">
-                    <div class="stats">
-                      <i class="material-icons">remove_red_eye</i>
-                      <a href="julgados.php">Ver Julgados</a>
-                    </div>
-                  </div>
+                  <h4 class="card-title">Adicionar Peca</h4>
                 </div>
-              </div>
-              <div class="col-lg-3 col-md-6 col-sm-6">
-                <div class="card card-stats">
-                  <div class="card-header card-header-success card-header-icon">
-                    <div class="card-icon">
-                      <i class="material-icons">mic</i>
+                <form method="POST" action="controller/adicionar_peca.php">
+                  <div class="card-body ">
+                    <div class="row">
+                      <div class="col-md-8">
+                        <div class="form-group">
+                          <label for="titulo" class="bmd-label-floating">Título da Peça</label>
+                          <input type="text" class="form-control" name="titulo" id="titulo">
+                        </div>
+                      </div>
+                       <div class="col-md-4">
+                        <div class="form-group">
+                          <select class="form-control" name="categoria" data-size="7">
+                            <option hidden> Selecione uma Categoria</option>
+                            <option value="Petição Inicial">Petição Inicial</option>
+                            <option value="Contestação">Contestação</option>
+                            <option value="Recursos">Recursos</option>
+                            <option value="Peças Execução">Peças Execução</option>
+                          </select>
+                        </div>
+                      </div>
                     </div>
-                    <p class="card-category">PodCasts Gravados</p>
-                    <h3 class="card-title">37</h3>
-                  </div>
-                  <div class="card-footer">
-                    <div class="stats">
-                      <i class="material-icons">audiotrack</i>
-                      <a href="julgados.php">Ver PodCasts</a>
+                    <!-- Subcategoria #START -->
+                    <div class="row">
+                     
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <select class="form-control" name="subcategoria" data-size="7">
+                            <option hidden> Selecione uma Subcategoria</option>
+                            <option value="Diversos">Diversos</option>
+                          </select>
+                        </div>
+                      </div>
+                      <!-- Subcategoria #END -->
+
+                      <!-- Assunto #START -->
+                    
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <select class="form-control" name="assunto" data-size="7">
+                            <option hidden> Selecione um Assunto</option>
+                            <option value="Geral">Geral </option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Assunto #END -->
+                    <br><br>
+                    <!-- Peça #START -->
+                    <div class="form-group">
+                      <textarea id="editor1" name="conteudo" placeholder="Corpo da Peça"></textarea>
                     </div>
                   </div>
-                </div>
-              </div>
-              <div class="col-lg-3 col-md-6 col-sm-6">
-                <div class="card card-stats">
-                  <div class="card-header card-header-info card-header-icon">
-                    <div class="card-icon">
-                      <i class="fas fa-copy"></i>
-                    </div>
-                    <p class="card-category">Peças disponíveis</p>
-                    <h3 class="card-title">4.530</h3>
+                  <div class="card-footer ">
+                    <button type="submit" class="btn btn-fill btn-rose">Adicionar</button>
                   </div>
-                  <div class="card-footer">
-                    <div class="stats">
-                      <i class="material-icons">edit</i>
-                      <a href="julgados.php">Ver Peças</a>
-                    </div>
-                  </div>
-                </div>
+                </form>
               </div>
             </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="card">
-                  <div class="card-header card-header-primary card-header-icon">
-                    <div class="card-icon">
-                      <i class="material-icons">person</i>
-                    </div>
-                    <h4 class="card-title">Usuários</h4>
-                  </div>
-                  <div class="card-body">
-                    <div class="toolbar">
-                      <!--        Here you can write extra buttons/actions for the toolbar              -->
-                    </div>
-                    <div class="material-datatables">
-                      <table id="datatables1" class="table table-striped table-no-bordered table-hover datatable" cellspacing="0" width="100%" style="width:100%">
-                        <thead>
-                          <tr>
-                            <th>ID</th>
-                            <th>Nome</th>
-                            <th>Username</th>
-                            <th>Plano</th>
-                            <th>Data Vencimento</th>
-                            <th>Data Cadastro</th>
-                            <th>Último Acesso</th>
-                            <th class="disabled-sorting text-right">Ações</th>
-                          </tr>
-                        </thead>
-                        <tfoot>
-                          <tr>
-                            <th>ID</th>
-                            <th>Nome</th>
-                            <th>Username</th>
-                            <th>Plano</th>
-                            <th>Data Vencimento</th>
-                            <th>Data Cadastro</th>
-                            <th>Último Acesso</th>
-                            <th class="text-right">Ações</th>
-                          </tr>
-                        </tfoot>
-                        <tbody>
-                          <?php 
-                            while($data = mysqli_fetch_assoc($query)){ 
-                          ?>
-                          <tr>
-                            <td><?php echo $data['id']; ?></td>
-                            <td><?php echo $data['nome']; ?></td>
-                            <td><?php echo $data['username']; ?></td>
-                            <td><?php echo $data['plano']; ?></td>
-                            <td><?php echo $data['data_vencimento']; ?></td>
-                            <td><?php echo $data['data_cadastro']; ?></td>
-                            <td><?php echo $data['ultimo_acesso']; ?></td>
-                            <td class="text-right">
-                              <a href="controller/acesso.php?id=<?php echo $data['id']; ?>" class="btn btn-link btn-rose btn-just-icon edit" data-placement="top" title="<?php echo $data['plano'] == 'premium'?'Bloquear':'Liberar' ?> acesso"><i class="material-icons"><?php echo $data['plano'] == 'premium'?'lock':'lock_open' ?></i></a>
-                            </td>
-                          </tr>
-                          <?php } ?>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                  <!-- end content-->
-                </div>
-                <!--  end card  -->
-              </div>
-            </div>
-            
+            <!-- end col-md-4 -->
           </div>
+          <!-- end row -->
         </div>
       </div>
     </div>
@@ -280,28 +287,28 @@
             <img src="assets/img/sidebar-4.jpg" alt="">
           </a>
         </li>
-        <li class="button-container">
-          <a href="https://www.creative-tim.com/product/material-dashboard-pro" target="_blank" class="btn btn-rose btn-block btn-fill">Buy Now</a>
-          <a href="https://demos.creative-tim.com/material-dashboard-pro/docs/2.1/getting-started/introduction.html" target="_blank" class="btn btn-default btn-block">
-            Documentation
-          </a>
-          <a href="https://www.creative-tim.com/product/material-dashboard" target="_blank" class="btn btn-info btn-block">
-            Get Free Demo!
-          </a>
-        </li>
-        <li class="button-container github-star">
-          <a class="github-button" href="https://github.com/creativetimofficial/ct-material-dashboard-pro" data-icon="octicon-star" data-size="large" data-show-count="true" aria-label="Star ntkme/github-buttons on GitHub">Star</a>
-        </li>
-        <li class="header-title">Thank you for 95 shares!</li>
-        <li class="button-container text-center">
-          <button id="twitter" class="btn btn-round btn-twitter"><i class="fa fa-twitter"></i> &middot; 45</button>
-          <button id="facebook" class="btn btn-round btn-facebook"><i class="fa fa-facebook-f"></i> &middot; 50</button>
-          <br>
-          <br>
-        </li>
       </ul>
     </div>
   </div>
+
+  <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          Excluir peca
+        </div>
+        <div class="modal-body">
+          Deseja realmente excluir a Peça?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+          <a class="btn btn-danger btn-ok">Excluir</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
   <!--   Core JS Files   -->
   <script src="assets/js/core/jquery.min.js"></script>
   <script src="assets/js/core/popper.min.js"></script>
@@ -345,9 +352,43 @@
   <script src="assets/js/material-dashboard.js?v=2.1.0" type="text/javascript"></script>
   <!-- Material Dashboard DEMO methods, don't include it in your project! -->
   <script src="assets/demo/demo.js"></script>
+
   <script>
+    $('.btn-favoritar').click(function(){
+
+      var btn = $(this);
+      var icon = btn.find("i").attr('id');
+
+      var id = btn.attr('id');
+      var status = btn.attr('title');
+      var url = "controller/favoritar_peca.php";
+      
+
+      $.ajax({
+        url : url,
+        data: {
+          id: id
+        },
+        method: 'POST',
+        beforeSend: function(){
+          if(status == 'Favoritar'){
+            btn.attr("title", "Desfavoritar");
+            btn.html("<i class='material-icons' id='icon_favorite'>favorite_border</i>");
+          } else {
+            btn.attr("title", "Favoritar");
+            btn.html("<i class='material-icons' id='icon_favorite'>favorite</i>");
+          }
+        }
+        
+      });
+    });
+  </script>
+ <script>
+    $('#confirm-delete').on('show.bs.modal', function(e) {
+      $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
+    });
+  
     $(document).ready(function() {
-      $(document).ready(function() {
       $('.datatable').DataTable({
         "pagingType": "full_numbers",
         "lengthMenu": [
@@ -357,13 +398,13 @@
         responsive: true,
         language: {
           search: "_INPUT_",
-          searchPlaceholder: "Buscar julgados",
+          searchPlaceholder: "Buscar Peças",
         }
       });
 
       var table = $('.datatable').DataTable();
     });
-
+    $(document).ready(function() {
       $().ready(function() {
         $sidebar = $('.sidebar');
 
@@ -534,18 +575,10 @@
     });
   </script>
   <script>
-    $(document).ready(function() {
-      // Javascript method's body can be found in assets/js/demos.js
-      md.initDashboardPageCharts();
-
-      md.initVectorMap();
-
-    });
-
     // Alert Config
     var sucesso = <?php echo $_SESSION['sucesso']; $_SESSION['sucesso'] = ''; ?>;
     if(sucesso == 1){
-      var notify = $.notify('<div class="alert-icon"><i class="material-icons">check</i></div> <strong>Julgado</strong> adicionado com sucesso.', {
+      var notify = $.notify('<div class="alert-icon"><i class="material-icons">check</i></div> <strong>Peça</strong> adicionada com sucesso.', {
         icon: 'glyphicon glyphicon-alert',
         type: 'success',
         allow_dismiss: true
@@ -557,108 +590,61 @@
         allow_dismiss: true
       });
     } else if(sucesso == 3){
-      var notify = $.notify('<div class="alert-icon"><i class="material-icons">error_outline</i></div> <strong>Erro:</strong> Julgado não adicionado.', {
+      var notify = $.notify('<div class="alert-icon"><i class="material-icons">error_outline</i></div> <strong>Erro:</strong> Peça não adicionada.', {
         icon: 'glyphicon glyphicon-alert',
         type: 'danger',
         allow_dismiss: true
       });
     } else if(sucesso == 4){
-      var notify = $.notify('<div class="alert-icon"><i class="material-icons">warning</i></div> <strong>Julgado</strong> excluído com sucesso.', {
+      var notify = $.notify('<div class="alert-icon"><i class="material-icons">warning</i></div> <strong>Peça</strong> excluída com sucesso.', {
         icon: 'glyphicon glyphicon-alert',
         type: 'warning',
         allow_dismiss: true
       });
     } else if(sucesso == 5){
-      var notify = $.notify('<div class="alert-icon"><i class="material-icons">error_outline</i></div> <strong>Erro:</strong>Julgado não excluído.', {
+      var notify = $.notify('<div class="alert-icon"><i class="material-icons">error_outline</i></div> <strong>Erro:</strong>Peça não excluída.', {
         icon: 'glyphicon glyphicon-alert',
         type: 'danger',
         allow_dismiss: true
       });
     } else if(sucesso == 6){
-      var notify = $.notify('<div class="alert-icon"><i class="material-icons">error_outline</i></div> <strong>Erro:</strong> Selecione um Julgado.', {
+      var notify = $.notify('<div class="alert-icon"><i class="material-icons">error_outline</i></div> <strong>Erro:</strong> Selecione uma Peça.', {
         icon: 'glyphicon glyphicon-alert',
         type: 'danger',
         allow_dismiss: true
       });
     } else if(sucesso == 7){
-      var notify = $.notify('<div class="alert-icon"><i class="material-icons">favorite</i></div> <strong>Julgado</strong> favoritado com sucesso.', {
+      var notify = $.notify('<div class="alert-icon"><i class="material-icons">favorite</i></div> <strong>Peça</strong> favoritada com sucesso.', {
         icon: 'glyphicon glyphicon-alert',
         type: 'success',
         allow_dismiss: true
       });
     } else if(sucesso == 8){
-      var notify = $.notify('<div class="alert-icon"><i class="material-icons">error_outline</i></div> <strong>Erro: </strong> Julgado não favoritado, tente novamente mais tarde.', {
+      var notify = $.notify('<div class="alert-icon"><i class="material-icons">error_outline</i></div> <strong>Erro: </strong> Peça não favoritada, tente novamente mais tarde.', {
         icon: 'glyphicon glyphicon-alert',
         type: 'danger',
         allow_dismiss: true
       });
     } else if(sucesso == 9){
-      var notify = $.notify('<div class="alert-icon"><i class="material-icons">favorite</i></div> <strong>Julgado</strong> desfavoritado com sucesso.', {
+      var notify = $.notify('<div class="alert-icon"><i class="material-icons">favorite_border</i></div> <strong>Peça</strong> desfavoritada com sucesso.', {
         icon: 'glyphicon glyphicon-alert',
         type: 'success',
         allow_dismiss: true
       });
     } else if(sucesso == 10){
-      var notify = $.notify('<div class="alert-icon"><i class="material-icons">favorite_border</i></div> <strong>Julgado</strong> atualizado com sucesso.', {
+      var notify = $.notify('<div class="alert-icon"><i class="material-icons">favorite_border</i></div> <strong>Peça</strong> atualizada com sucesso.', {
         icon: 'glyphicon glyphicon-alert',
         type: 'success',
         allow_dismiss: true
       });
     } else if(sucesso == 11){
-      var notify = $.notify('<div class="alert-icon"><i class="material-icons">favorite_border</i></div> <strong>Erro: </strong> Julgado não atualizado.', {
+      var notify = $.notify('<div class="alert-icon"><i class="material-icons">favorite_border</i></div> <strong>Erro: </strong> Peça não atualizada.', {
         icon: 'glyphicon glyphicon-alert',
         type: 'danger',
         allow_dismiss: true
       });
-    } else if(sucesso == 12){
-      var notify = $.notify('<div class="alert-icon"><i class="material-icons">favorite_border</i></div> <strong>Comentário</strong> adicionado com sucesso.', {
-        icon: 'glyphicon glyphicon-alert',
-        type: 'success',
-        allow_dismiss: true
-      });
-    } else if(sucesso == 13){
-      var notify = $.notify('<div class="alert-icon"><i class="material-icons">favorite_border</i></div> <strong>Erro: </strong> Comentário não adicionado.', {
-        icon: 'glyphicon glyphicon-alert',
-        type: 'danger',
-        allow_dismiss: true
-      });
-    } else if(sucesso == 14){
-      var notify = $.notify('<div class="alert-icon"><i class="material-icons">check</i></div> <strong>Conta </strong> atualizada com sucesso.', {
-        icon: 'glyphicon glyphicon-alert',
-        type: 'success',
-        allow_dismiss: true
-      });
-    } else if(sucesso == 15){
-      var notify = $.notify('<div class="alert-icon"><i class="material-icons">check</i></div> <strong>Erro: </strong> Conta não atualizada. Tente novamente mais tarde.', {
-        icon: 'glyphicon glyphicon-alert',
-        type: 'danger',
-        allow_dismiss: true
-      });
-    } else if(sucesso == 16){
-      var notify = $.notify('<div class="alert-icon"><i class="material-icons">error_outline</i></div> <strong>Erro: </strong> Conta desconhecida.', {
-        icon: 'glyphicon glyphicon-alert',
-        type: 'danger',
-        allow_dismiss: true
-      });
-    } else if(sucesso == 17){
-      var notify = $.notify('<div class="alert-icon"><i class="material-icons">error_outline</i></div> <strong>Erro: </strong> Este usuário já está sendo utilizado.', {
-        icon: 'glyphicon glyphicon-alert',
-        type: 'danger',
-        allow_dismiss: true
-      });
-    } else if(sucesso == 20){
-      var notify = $.notify('<div class="alert-icon"><i class="material-icons">error_outline</i></div> <strong>Acesso </strong> revogado.', {
-        icon: 'glyphicon glyphicon-alert',
-        type: 'warning',
-        allow_dismiss: true
-      });
-    } else if(sucesso == 21){
-      var notify = $.notify('<div class="alert-icon"><i class="material-icons">error_outline</i></div> <strong>Acesso </strong> liberado.', {
-        icon: 'glyphicon glyphicon-alert',
-        type: 'success',
-        allow_dismiss: true
-      });
-    } 
+    }
+    
   </script>
 </body>
 

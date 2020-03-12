@@ -97,9 +97,15 @@ Tip 2: you can also add an image using data-image tag
                   </a>
                 </li>
                 <li class="nav-item <?php echo $pagina == 'pecas' ? 'active':''; ?>">
-                  <a class="nav-link" href="#">
+                  <a class="nav-link" href="modelo_pecas.php">
                     <i class="material-icons">menu_book</i>
                     <span class="sidebar-normal"> Modelos de Peças </span>
+                  </a>
+                </li>
+                <li class="nav-item <?php echo $pagina == 'podcast' ? 'active':''; ?>">
+                  <a class="nav-link" href="podcasts.php">
+                    <i class="material-icons">mic</i>
+                    <span class="sidebar-normal"> PodCasts </span>
                   </a>
                 </li>
               </ul>

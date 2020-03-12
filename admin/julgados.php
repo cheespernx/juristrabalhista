@@ -120,7 +120,7 @@
                           <td class="text-right">
                             <a href="verjulgado.php?id=<?php echo $data['id']; ?>" class="btn btn-link btn-info btn-just-icon like" data-placement="top" title="Ver"><i class="material-icons">remove_red_eye</i></a>
                             <a href="editar_julgado.php?id=<?php echo $data['id']; ?>" class="btn btn-link btn-warning btn-just-icon edit" data-placement="top" title="Editar"><i class="material-icons">edit</i></a>
-                            <a href="controller/<?php echo $num > 0 ? 'desfavoritar':'favoritar' ?>_julgado.php?id=<?php echo $data['id']; ?>" class="btn btn-link btn-rose btn-just-icon edit" data-placement="top" title="<?php echo $num > 0 ? 'Desfavoritar':'Favoritar' ?>"><i class="material-icons"><?php echo $num > 0 ? 'favorite_border':'favorite' ?></i></a>
+                            <a id="<?php echo $data['id']; ?>" data-status="<?php echo $data['id']; ?>" class="btn btn-link btn-rose btn-just-icon edit btn-favoritar" data-placement="top" title="<?php echo $num > 0 ? 'Desfavoritar':'Favoritar' ?>"><i class="material-icons" id="icon_favorite"><?php echo $num > 0 ? 'favorite_border':'favorite' ?></i></a>
                             <a href="#" class="btn btn-link btn-danger btn-just-icon remove" data-href="controller/excluir_julgado.php?id=<?php echo $data['id']; ?>" data-toggle="modal" data-target="#confirm-delete" data-placement="top" title="Excluir"><i class="material-icons">close</i></a>
                           </td>
                         </tr>
@@ -336,20 +336,20 @@
 
   <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                Excluir julgado
-            </div>
-            <div class="modal-body">
-                Deseja realmente excluir o julgado?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                <a class="btn btn-danger btn-ok">Excluir</a>
-            </div>
+      <div class="modal-content">
+        <div class="modal-header">
+          Excluir julgado
         </div>
+        <div class="modal-body">
+          Deseja realmente excluir o julgado?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+          <a class="btn btn-danger btn-ok">Excluir</a>
+        </div>
+      </div>
     </div>
-</div>
+  </div>
 
 
   <!--   Core JS Files   -->
@@ -395,6 +395,36 @@
   <script src="assets/js/material-dashboard.js?v=2.1.0" type="text/javascript"></script>
   <!-- Material Dashboard DEMO methods, don't include it in your project! -->
   <script src="assets/demo/demo.js"></script>
+  <script>
+    $('.btn-favoritar').click(function(){
+
+      var btn = $(this);
+      var icon = btn.find("i").attr('id');
+
+      var id = btn.attr('id');
+      var status = btn.attr('title');
+      var url = "controller/favoritar_julgado.php";
+      
+
+      $.ajax({
+        url : url,
+        data: {
+          id: id
+        },
+        method: 'POST',
+        beforeSend: function(){
+          if(status == 'Favoritar'){
+            btn.attr("title", "Desfavoritar");
+            btn.html("<i class='material-icons' id='icon_favorite'>favorite_border</i>");
+          } else {
+            btn.attr("title", "Favoritar");
+            btn.html("<i class='material-icons' id='icon_favorite'>favorite</i>");
+          }
+        }
+        
+      });
+    });
+  </script>
  <script>
     $('#confirm-delete').on('show.bs.modal', function(e) {
       $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
