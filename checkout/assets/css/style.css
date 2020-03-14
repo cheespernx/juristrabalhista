@@ -1,0 +1,68 @@
+@import url('https://fonts.googleapis.com/css?family=Ubuntu:300,400,700&display=swap');
+html {
+    font-family: 'Ubuntu', sans-serif;
+}
+
+body {
+    background-color: #eaebee;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+h3 {
+    font-family: 'Ubuntu', sans-serif !important;
+    font-weight: 300;
+}
+
+.tab {
+    background-color: #ffffff;
+    padding: 25px;
+    height: fit-content;
+    box-shadow: 5px 2px 5px rgba(0, 0, 0, 0.02);
+}
+
+.price-box {
+    background-color: #f6f7f8;
+    padding: 25px;
+}
+
+.resumo {
+    height: fit-content;
+}
+
+@media only screen and (max-width: 980px) {
+    .resumo {
+        display: none;
+    }
+}
+
+.display-none {
+    display: none;
+}
+
+.display-block {
+    display: block;
+}
+
+.img-band {
+    padding-right: 2px;
+}
+
+.select-qnt-parcelas {
+    display: none;
+}
+
+.cartao-credito {
+    display: none;
+}
+
+.boleto {
+    display: none;
+}
+
+.debito-online {
+    display: none;
+}
+
+.hidden {
+    display: none;
+}

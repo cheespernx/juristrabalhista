@@ -1,0 +1,13 @@
+Cadastro de Produtos:
+  - Criar Tabela no DB;
+  - Inserir os Produtos;
+  - Fazer a validação dos produtos;
+  - Firebase?? //Chat 
+  - Inserir funcionalidade no Prime;
+    - Inserir na Sidebar do Admin;
+    - Inserir o painel de adição e edição no Admin;
+===*===*===*===*===*===*===*===*===*===*===*===*===*===*===*===*===*===*===
+Cadastro de Novo Pedido:
+  - Criar página de cadastro;
+  - Validar o cadastro das informações;
+  - Validar se Existe Dependentes - OK
