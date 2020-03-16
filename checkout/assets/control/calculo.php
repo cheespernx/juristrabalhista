@@ -1,8 +1,8 @@
 <?php
 
-  $servername = "vps.nexusnx.com";
-  $database = "produtos";
-  $username = "root";
+  $servername = "sql170.main-hosting.eu";
+  $database = "u668533246_juristrab";
+  $username = "u668533246_juristrab";
   $password = "aw96b6k13751";
 
   $conn = mysqli_connect($servername, $username, $password, $database);
@@ -11,13 +11,13 @@
   }
 
   if(isset($_GET['plano'])){
-    $codigo = $_GET['plano'];
+    $nome = $_GET['plano'];
   } else {
-    $codigo = "AMIL-DENT-F-M";
+    $nome = "premium";
   }
   
 
-  $querySelecaoProdutos = "SELECT * FROM odontologico WHERE codigo = '$codigo'";
+  $querySelecaoProdutos = "SELECT * FROM plano WHERE nome = '$nome'";
 
   $execQuery = mysqli_query($conn, $querySelecaoProdutos);
 
@@ -25,14 +25,7 @@
     $data = mysqli_fetch_assoc($execQuery);
     $id = $data['id'];
     $nome = $data['nome'];
-    $operadora = $data['operadora'];
     $valor = $data['valor'];
-    $valorPromocional = $data['valor_promocional'];
-    $codigoPlano = $data['codigo'];
-    $categoria = $data['categoria'];
-    $inclusaoDependentes = $data['inclusao_dependentes'];
-    $tipo = $data['tipo'];
-    $modalidade = $data['modalidade'];
   }
 
 // ===\===\===\===\=== SISTEMA DE CÁLCULO END ===\===\===\===\===\===\===\===
