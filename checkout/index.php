@@ -17,7 +17,7 @@
 
     <link rel="stylesheet" href="assets/css/bootstrap/bootstrap.css" />
     <link rel="stylesheet" href="assets/css/style.css" />
-
+    <script src="https://assets.pagar.me/checkout/checkout.js"></script>
     <title>JurisTrabalhista</title>
 
     <script>
@@ -261,123 +261,28 @@
     <script src="assets/js/main.js"></script>
     <script src="https://assets.pagar.me/checkout/checkout.js"></script>
 
+
     <script>
-      var button = document.getElementById('btnComprar');
-      
-      // Abrir o modal ao clicar no botão
-      button.addEventListener('click', function() {		
-
+      $(document).ready(function() {
       var amount = valorPlano;
-      var external_id = '123';
-      var name = document.getElementById('nome');
-      var email = document.getElementById('email');
+        var button = $('#btnComprar');
+        var email = document.getElementById('email').value;
+        button.click(function() {
+          // INICIAR A INSTÂNCIA DO CHECKOUT
+          // declarando um callback de sucesso
+          var checkout = new PagarMeCheckout.Checkout({"encryption_key":"ek_test_ZdUW1y6OLoejQdWKyoHPIAnlZ4gTLr", success: function(data) {
+            console.log(data);
+            //Tratar aqui as ações de callback do checkout, como exibição de mensagem ou envio de token para captura da transação
+            
+            
+            var params = {"customerData":"false", "amount":amount, "createToken": "false", "interestRate": 10 };
+            checkout.open(params);
+          }});
 
-      var telefone = document.getElementById('telefone');
-
-      var cpfCompleto = document.getElementById('cpf');
-      var cpf = cpf.replace('.', '');
-      var dataNascimentoCompleta = document.getElementById('data');
-      var dataNascimento = dataNascimentoCompleta.replace('/', '-');
-      var dataNascimento = dataNascimento.getFullYear() + "-" + (dataNascimento.getMonth() + 1) + "-" + dataNascimento.getDate();
-      var rua = document.getElementById('rua');
-      var bairro = document.getElementById('bairro');
-      var estado = document.getElementById('estado');
-      var cidade = document.getElementById('cidade');
-      var numero = document.getElementById('numero');
-      var cepCompleto = document.getElementById('cep');
-      var cep = cepCompleto.replace(/\.|\-/g, '');
-
-      // INICIAR A INSTÂNCIA DO CHECKOUT
-      // declarando um callback de sucesso
-      var checkout = new PagarMeCheckout.Checkout({"encryption_key":"ek_live_K1gbuoUcypATT2oI68pwWD78rzF2cD", success: function(data) {
-          console.log(data);
-          //Tratar aqui as ações de callback do checkout, como exibição de mensagem ou envio de token para captura da transação
-      }});
-
-        
-        // Obs.: é necessário passar os valores boolean como string
-        checkout.open({
-          amount: amount,
-          customerData: 'false',
-          createToken: 'true',
-          paymentMethods: 'credit_card',
-          customer: {
-            external_id: external_id,
-            name: name,
-            type: 'individual',
-            country: 'br',
-            email: email,
-            documents: [
-              {
-                type: 'cpf',
-                number: cpf,
-              },
-            ],
-            phone_numbers: [telefone],
-            birthday: dataNascimento
-          },
-          billing: {
-            name: name,
-            address: {
-              country: 'br',
-              state: estado,
-              city: cidade,
-              neighborhood: bairro,
-              street: rua,
-              street_number: numero,
-              zipcode: cep
-            }
-          },
-          shipping: {
-            name: name,
-            fee: 0,
-            delivery_date: '2017-12-25',
-            expedited: "true",
-            address: {
-              country: 'br',
-              state: estado,
-              city: cidade,
-              neighborhood: bairro,
-              street: rua,
-              street_number: numero,
-              zipcode: cep
-            }
-          },
-          items: [
-            {
-              id: idPlano,
-              title: plano,
-              unit_price: amount,
-              quantity: 1,
-              tangible: false
-            }
-          ]
-        })
+        });
       });
-      
-      
-      /* // DEFINIR AS OPÇÕES
-      // e abrir o modal
-      // É necessário passar os valores boolean em "var params" como string
-      var params = {"customerData":"false", "amount":"29.90", "createToken": "false", "interestRate": 10 };
-      checkout.open(params); */
-
-
-      import pagarme from 'pagarme'
-  
-      pagarme.client.connect({ api_key: 'ek_live_K1gbuoUcypATT2oI68pwWD78rzF2cD' })
-        .then(client => client.subscriptions.create({
-          plan_id: 1337,
-          card_number: '4111111111111111',
-          card_holder_name: 'abc',
-          card_expiration_date: '1225',
-          card_cvv: '123',
-          customer: {
-            email: 'someone@somewhere.com'
-          }
-        }))
     </script>
-
+    
     <script>
       setInfoPedido();
       function setInfoPedido(){

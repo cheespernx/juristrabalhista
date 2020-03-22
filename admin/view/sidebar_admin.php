@@ -118,7 +118,7 @@ Tip 2: you can also add an image using data-image tag
             </a>
           </li>
           <li class="nav-item <?php echo $pagina == 'produtos' ? 'active':''; ?>">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="planos.php">
               <i class="material-icons">add_shopping_cart</i>
               <p> Produtos </p>
             </a>
