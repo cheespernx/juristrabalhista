@@ -45,40 +45,38 @@
           <div class="row">
             <!-- end col-md-8 -->
             <div class="col-md-12">
-              <div class="card ">
+              <div class="card">
                 <div class="card-header card-header-info card-header-icon">
                   <div class="card-icon">
                     <i class="material-icons">add</i>
                   </div>
                   <h4 class="card-title">Adicionar um Plano</h4>
                 </div>
-                <form method="POST" action="controller/criar_plano.php">
-                  <div class="card-body ">
-                    <div class="row">
-                      <div class="col-md-4">
-                        <div class="form-group">
-                          <label for="nome" class="bmd-label-floating">Nome do Plano</label>
-                          <input type="text" class="form-control" name="nome" id="nome">
-                        </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label for="nome" class="bmd-label-floating">Nome do Plano</label>
+                        <input type="text" class="form-control" name="nome" id="nome">
                       </div>
-                      <div class="col-md-4">
-                        <div class="form-group">
-                        <label for="dias" class="bmd-label-floating">Validade do Plano (em dias)</label>
-                          <input type="number" class="form-control" name="dias" id="dias" min="1" max="30" value="30">
-                        </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group">
+                      <label for="dias" class="bmd-label-floating">Validade do Plano (em dias)</label>
+                        <input type="number" class="form-control" name="dias" id="dias" min="1" max="30" value="30">
                       </div>
-                      <div class="col-md-4">
-                        <div class="form-group">
-                          <label for="valor" class="bmd-label-floating">Valor do Plano</label>
-                          <input type="text" class="form-control" name="valor" id="valor">
-                        </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label for="valor" class="bmd-label-floating">Valor do Plano</label>
+                        <input type="text" class="form-control" name="valor" id="valor">
                       </div>
                     </div>
                   </div>
-                  <div class="card-footer ">
-                    <button type="submit" class="btn btn-fill btn-info">Adicionar</button>
-                  </div>
-                </form>
+                </div>
+                <div class="card-footer ">
+                  <button type="submit" class="btn btn-fill btn-info">Adicionar</button>
+                </div>
               </div>
             </div>
             <!-- end col-md-4 -->
@@ -168,46 +166,9 @@
             <img src="assets/img/sidebar-4.jpg" alt="">
           </a>
         </li>
-        <li class="button-container">
-          <a href="https://www.creative-tim.com/product/material-dashboard-pro" target="_blank" class="btn btn-rose btn-block btn-fill">Buy Now</a>
-          <a href="https://demos.creative-tim.com/material-dashboard-pro/docs/2.1/getting-started/introduction.html" target="_blank" class="btn btn-default btn-block">
-            Documentation
-          </a>
-          <a href="https://www.creative-tim.com/product/material-dashboard" target="_blank" class="btn btn-info btn-block">
-            Get Free Demo!
-          </a>
-        </li>
-        <li class="button-container github-star">
-          <a class="github-button" href="https://github.com/creativetimofficial/ct-material-dashboard-pro" data-icon="octicon-star" data-size="large" data-show-count="true" aria-label="Star ntkme/github-buttons on GitHub">Star</a>
-        </li>
-        <li class="header-title">Thank you for 95 shares!</li>
-        <li class="button-container text-center">
-          <button id="twitter" class="btn btn-round btn-twitter"><i class="fa fa-twitter"></i> &middot; 45</button>
-          <button id="facebook" class="btn btn-round btn-facebook"><i class="fa fa-facebook-f"></i> &middot; 50</button>
-          <br>
-          <br>
-        </li>
       </ul>
     </div>
   </div>
-
-  <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          Excluir julgado
-        </div>
-        <div class="modal-body">
-          Deseja realmente excluir o julgado?
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-          <a class="btn btn-danger btn-ok">Excluir</a>
-        </div>
-      </div>
-    </div>
-  </div>
-
 
   <!--   Core JS Files   -->
   <script src="assets/js/core/jquery.min.js"></script>
@@ -253,20 +214,20 @@
   <!-- Material Dashboard DEMO methods, don't include it in your project! -->
   <script src="assets/demo/demo.js"></script>
   <script>
-    const pagarme = require('pagarme')
+    const pagarme = require('pagarme');
   
-    pagarme.client.connect({ api_key: 'SUA_API_KEY' })
+    pagarme.client.connect({ api_key: 'ak_test_bU12ZdxyWAsjLXsR50hKHbvmAmFKpQ' })
       .then(client => client.plans.create({
         amount: $('#valor').val,
         days: $('#dias').val,
         name: $('#nome').val,
-        payment_methods: ['credit_card']
+        payment_methods: ['credit_card'],
       }))
       .then(plan => {
         $.post("controller/criar_plano.php", {
-          valor: $('#valor').val,
-          dias: $('#dias').val,
-          nome: $('#nome').val,
+          valor: plan.amount,
+          dias: plan.days,
+          nome: plan.name,
           id: plan.id
         }, function(msg){
           var notify = $.notify(msg, {
@@ -274,10 +235,10 @@
             type: 'info',
             allow_dismiss: true
           });
-        })
+        });
       });
   </script>
- <script>
+  <script>
   
     $(document).ready(function() {
       $('.datatable').DataTable({

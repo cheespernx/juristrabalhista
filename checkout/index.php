@@ -263,6 +263,7 @@
 
 
     <script>
+     import pagarme from 'pagarme';
       $(document).ready(function() {
       var amount = valorPlano;
         var button = $('#btnComprar');
@@ -274,8 +275,9 @@
             console.log(data);
             //Tratar aqui as ações de callback do checkout, como exibição de mensagem ou envio de token para captura da transação
             
-            
-            var params = {"customerData":"false", "amount":amount, "createToken": "false", "interestRate": 10 };
+            pagarme.client.connect({ api_key: 'ak_test_bU12ZdxyWAsjLXsR50hKHbvmAmFKpQ' })
+              .then(client => client.transactions.capture({ id: data.token, amount: amount }));
+            var params = {"customerData":"false", "amount":amount, "createToken": "false", "interestRate": 10, "paymentMethods": 'credit_card', };
             checkout.open(params);
           }});
 

@@ -13,8 +13,10 @@ if($_POST){
 	} else {
 		$msg = 'Plano não adicionado';
 	}
-	echo $msg;
-	
+	mysqli_close();
+	return $msg;
+	exit();
+
 } else {
 	exit();
 }
