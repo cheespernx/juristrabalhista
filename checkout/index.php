@@ -274,7 +274,9 @@
         var rua = document.getElementById('rua').value;
         var numero = document.getElementById('numero').value;
         var bairro = document.getElementById('bairro').value;
-        var cpf = $('#cpf').val();
+        var cpf = document.getElementById('cpf').value;
+        var cpf = cpf.replace(/\.|\-/g, '');
+        var dataNascimento = document.getElementById('dataNascimento').value;
         button.click(function() {
           // INICIAR A INSTÂNCIA DO CHECKOUT
           // declarando um callback de sucesso
@@ -292,17 +294,19 @@
                 .then(client => client.subscriptions.create({
                   plan_id: 472716,
                   card_id: data.card_id,
-                  external_id: '#3301',
-                  name: "João das Neves",
-                  "type": "individual",
-                  "country": "br",
-                  "email": "joaoneves@norte.com",
-                  "documents": [
-                    {
-                      "type": "cpf",
-                      "number": "30621143049"
-                    }
-                  ],
+                  customer: {
+                    external_id: '#3301',
+                    name: "João das Neves",
+                    type: "individual",
+                    country: "br",
+                    email: email,
+                    documents: {
+                        type: "cpf",
+                        number: cpf
+                      },
+                    phone_numbers: [telefone],
+                    birthday: dataNascimento
+                  }
                 }))
                 .then(subscription => console.log(subscription))
               })
