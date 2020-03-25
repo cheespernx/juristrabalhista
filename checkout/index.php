@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="assets/css/bootstrap/bootstrap.css" />
     <link rel="stylesheet" href="assets/css/style.css" />
     <script src="https://assets.pagar.me/checkout/checkout.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <title>JurisTrabalhista</title>
 
     <script>
@@ -148,8 +149,8 @@
 
             <!-- CPF -->
             <div class="form-group col-md-6">
-              <label for="cpf-resp">CPF</label><a tabindex="0" id="help-resp" class="badge badge-info ml-1" data-trigger="focus" data-placement="top" data-toggle="popover" data-content="Seu CPF" onclick="$('#help-resp').popover('show')" style="color: #fff;">?</a>
-              <input type="text" name="cpf-resp-financeiro" id="cpf-resp-financeiro" class="form-control" data-mask="000.000.000-00" data-minlength="14" inputmode="numeric" data-error="Por favor, informe um CPF válido!" data-mask-selectonfocus="true"/>
+              <label for="cpf">CPF</label><a tabindex="0" id="help-resp" class="badge badge-info ml-1" data-trigger="focus" data-placement="top" data-toggle="popover" data-content="Seu CPF" onclick="$('#help-resp').popover('show')" style="color: #fff;">?</a>
+              <input type="text" name="cpf" id="cpf" class="form-control" data-mask="000.000.000-00" data-minlength="14" inputmode="numeric" data-error="Por favor, informe um CPF válido!" data-mask-selectonfocus="true"/>
               <div class="help-block with-errors"></div>
             </div>
             <!-- CPF -->
@@ -172,8 +173,8 @@
           <div class="row">
             <div class="form-group col-md-6">
               <label for="telefone">Telefone</label>
-              <input class="form-control" type="text" inputmode="numeric" name="telefone" id="telefone" maxlength="8" data-mask="00 0 0000-0000"/>
-              <small class="form-text text-muted">Ex.: 92 9 1234-5678</small>
+              <input class="form-control" type="text" inputmode="numeric" name="telefone" id="telefone" maxlength="8" data-mask="000000000"/>
+              <small class="form-text text-muted">Ex.: 912345678</small>
             </div>
             <div class="form-group col-md-6">
               <label for="email">E-mail</label>
@@ -263,23 +264,58 @@
 
 
     <script>
-     import pagarme from 'pagarme';
       $(document).ready(function() {
-      var amount = valorPlano;
+        var nome = document.getElementById('nome').value;
+        var amount = valorPlano;
         var button = $('#btnComprar');
         var email = document.getElementById('email').value;
+        var telefone = document.getElementById('telefone').value;
+        var nome = document.getElementById('nome').value;
+        var rua = document.getElementById('rua').value;
+        var numero = document.getElementById('numero').value;
+        var bairro = document.getElementById('bairro').value;
+        var cpf = $('#cpf').val();
         button.click(function() {
           // INICIAR A INSTÂNCIA DO CHECKOUT
           // declarando um callback de sucesso
-          var checkout = new PagarMeCheckout.Checkout({"encryption_key":"ek_test_ZdUW1y6OLoejQdWKyoHPIAnlZ4gTLr", success: function(data) {
-            console.log(data);
-            //Tratar aqui as ações de callback do checkout, como exibição de mensagem ou envio de token para captura da transação
-            
-            pagarme.client.connect({ api_key: 'ak_test_bU12ZdxyWAsjLXsR50hKHbvmAmFKpQ' })
-              .then(client => client.transactions.capture({ id: data.token, amount: amount }));
-            var params = {"customerData":"false", "amount":amount, "createToken": "false", "interestRate": 10, "paymentMethods": 'credit_card', };
-            checkout.open(params);
-          }});
+
+          var checkout = new PagarMeCheckout.Checkout({
+            encryption_key: 'ek_test_ZdUW1y6OLoejQdWKyoHPIAnlZ4gTLr',
+            success: function(data) {
+              console.log(data);
+              pagarme.client.connect({ api_key: 'ak_test_bU12ZdxyWAsjLXsR50hKHbvmAmFKpQ' })
+              .then(client => client.cards.create({
+                card_hash: data.card_hash
+              }))
+              .then(card => function(data){
+                pagarme.client.connect({ api_key: 'ak_test_bU12ZdxyWAsjLXsR50hKHbvmAmFKpQ' })
+                .then(client => client.subscriptions.create({
+                  plan_id: 472716,
+                  card_id: data.card_id,
+                  external_id: '#3301',
+                  name: "João das Neves",
+                  "type": "individual",
+                  "country": "br",
+                  "email": "joaoneves@norte.com",
+                  "documents": [
+                    {
+                      "type": "cpf",
+                      "number": "30621143049"
+                    }
+                  ],
+                }))
+                .then(subscription => console.log(subscription))
+              })
+            }});
+
+          var params = {
+            "customerData":"true", 
+            "amount":amount, 
+            "createToken": "false", 
+            "interestRate": 10, 
+            "paymentMethods": 'credit_card'
+          };
+          checkout.open(params);
 
         });
       });
