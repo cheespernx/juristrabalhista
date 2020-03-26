@@ -18,7 +18,6 @@
     <link rel="stylesheet" href="assets/css/bootstrap/bootstrap.css" />
     <link rel="stylesheet" href="assets/css/style.css" />
     <script src="https://assets.pagar.me/checkout/checkout.js"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <title>JurisTrabalhista</title>
 
     <script>
@@ -260,11 +259,11 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="assets/js/bootstrap/bootstrap.js"></script>
     <script src="assets/js/main.js"></script>
-    <script src="https://assets.pagar.me/checkout/checkout.js"></script>
 
 
     <script>
       $(document).ready(function() {
+
         var nome = document.getElementById('nome').value;
         var amount = valorPlano;
         var button = $('#btnComprar');
@@ -274,47 +273,76 @@
         var rua = document.getElementById('rua').value;
         var numero = document.getElementById('numero').value;
         var bairro = document.getElementById('bairro').value;
+        var estado = document.getElementById('estado').value;
+        var cidade = document.getElementById('cidade').value;
         var cpf = document.getElementById('cpf').value;
         var cpf = cpf.replace(/\.|\-/g, '');
         var dataNascimento = document.getElementById('dataNascimento').value;
+
         button.click(function() {
           // INICIAR A INSTÂNCIA DO CHECKOUT
           // declarando um callback de sucesso
 
-          var checkout = new PagarMeCheckout.Checkout({
+          var checkout = new PagarMeCheckout.Checkout({ //  Gera o checkout
             encryption_key: 'ek_test_ZdUW1y6OLoejQdWKyoHPIAnlZ4gTLr',
             success: function(data) {
               console.log(data);
               pagarme.client.connect({ api_key: 'ak_test_bU12ZdxyWAsjLXsR50hKHbvmAmFKpQ' })
-              .then(client => client.cards.create({
-                card_hash: data.card_hash
+              .then(client => client.cards.create({ // Gera o CARD_ID através do CARD_HASH
+                "card_hash": data.card_hash
               }))
-              .then(card => function(data){
-                pagarme.client.connect({ api_key: 'ak_test_bU12ZdxyWAsjLXsR50hKHbvmAmFKpQ' })
-                .then(client => client.subscriptions.create({
-                  plan_id: 472716,
-                  card_id: data.card_id,
-                  customer: {
-                    external_id: '#3301',
-                    name: "João das Neves",
-                    type: "individual",
-                    country: "br",
-                    email: email,
-                    documents: {
-                        type: "cpf",
-                        number: cpf
-                      },
-                    phone_numbers: [telefone],
-                    birthday: dataNascimento
-                  }
-                }))
-                .then(subscription => console.log(subscription))
+              .then(card => function(data){pagarme.client.connect({ 
+                "api_key": 'ak_test_bU12ZdxyWAsjLXsR50hKHbvmAmFKpQ'
               })
-            }});
+              .then(client => client.subscriptions.create({ // Cria uma assinatura passando todas as informações
+                plan_id: 472716,
+                card_id: data.card_id,
+                external_id: 3311,
+                  name: nome,
+                  type: "individual",
+                  country: "br",
+                  email: email,
+                  documents: [
+                    {
+                      type: "cpf",
+                      number: cpf
+                    }
+                  ],
+                  phone_numbers: [telefone],
+                  birthday: dataNascimento
+                },
+                billing: {
+                  name: nome,
+                  address: {
+                    country: "br",
+                    state: estado,
+                    city: cidade,
+                    neighborhood: bairro,
+                    street: rua,
+                    street_number: numero,
+                    zipcode: cep
+                  }
+                },
+                items: [
+                  {
+                    id: 1,
+                    title: "Plano Premium",
+                    unit_price: 29.90,
+                    quantity: 1,
+                    tangible: false
+                  }
+                ]
+                
+              }))
+              .then(subscription => console.log(subscription)).then(
+              
+              })
+            })
+          }});
 
           var params = {
-            "customerData":"true", 
-            "amount":amount, 
+            "customerData":"false", 
+            "amount": amount, 
             "createToken": "false", 
             "interestRate": 10, 
             "paymentMethods": 'credit_card'
